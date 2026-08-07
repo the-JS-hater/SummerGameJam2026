@@ -1137,69 +1137,44 @@ int main(int argc, char *argv[])
   load_texture(&tex1, "textures/placeholder16x16.png");
   load_texture(&texbottle, "textures/bottle.png");
 
-  light0 = (Light){.pos       = new_vec3(0.0f, 20.0f, 8.0f),
+  light0 = (Light){.pos       = new_vec3(0.0f, 3.0f, 5.0f),
                    .color_vec = new_vec3(1.0f, 0.95f, 0.85f)};
 
-  ambient_light_color = new_vec3(0.25f, 0.30f, 0.40f);
+  ambient_light_color = new_vec3(0.5f, 0.5f, 0.5f);
 
-  Model teapot_model       = load_model("models/bottle.obj");
-  teapot_model.mtw         = identity();
-  teapot_model.tex         = &texbottle;
-  Model teapot_model_matte = load_model("models/teapot.obj");
-  teapot_model_matte.mtw   = translate(-7.5, 0.0, 0.0);
-  teapot_model_matte.tex   = &tex1;
-  Model teapot_model_shiny = load_model("models/teapot.obj");
-  teapot_model_shiny.mtw   = translate(7.5, 0.0, 0.0);
-  teapot_model_shiny.tex   = &tex1;
-  Model martin             = load_model("models/martin.obj");
-  martin.mtw               = translate(0.0, 15.0, 0.0);
-  martin.tex               = &tex1;
+  Model bottle_model = load_model("models/bottle.obj");
+  bottle_model.mtw   = mat4_mult(translate(0, 0.25, 0), scale(0.03));
+  bottle_model.tex   = &texbottle;
 
-  Material matte_material = {
-    .ambient_coeff     = 0.15f,
-    .diffuse_coeff     = 0.85f,
-    .specular_strength = 0.05f,
-    .shininess         = 4.0f,
-    .specular_color    = {1.0f, 1.0f, 1.0f},
-  };
-  Material porcelain_material = {
+  Model bar_box = load_model("models/walk_area.obj");
+  bar_box.mtw   = identity();
+  bar_box.tex   = &tex1;
+
+  Material ground_material = {
     .ambient_coeff     = 0.12f,
     .diffuse_coeff     = 0.45f,
     .specular_strength = 0.85f,
     .shininess         = 120.0f,
     .specular_color    = {1.0f, 1.0f, 1.0f},
   };
-  Material metallic_material = {
-    .ambient_coeff     = 0.10f,
-    .diffuse_coeff     = 0.15f,
-    .specular_strength = 0.9f,
-    .shininess         = 60.0f,
-    .specular_color    = {0.9f, 0.9f, 0.9f},
+  Material bottle_material = {
+    .ambient_coeff     = 0.5,
+    .diffuse_coeff     = 0.45f,
+    .specular_strength = 0.85f,
+    .shininess         = 50.0f,
+    .specular_color    = {1.0f, 1.0f, 1.0f},
   };
-  teapot_model.material       = porcelain_material;
-  teapot_model_matte.material = matte_material;
-  teapot_model_shiny.material = metallic_material;
-  martin.material             = porcelain_material;
+  bottle_model.material = bottle_material;
 
   Model ground    = {0};
   ground.mesh     = generate_ground_mesh(60.0f, 1.5f, 12.0f);
   ground.mtw      = identity();
   ground.tex      = &tex1;
-  ground.material = matte_material;
+  ground.material = ground_material;
 
-#define NR_MODELS 4
-  Model scene[5] = {
-    ground, teapot_model, teapot_model_matte, teapot_model_shiny, martin,
-  };
+#define NR_MODELS 3
+  Model scene[NR_MODELS] = {ground, bottle_model, bar_box};
 
-  for (size_t i = 0; i < teapot_model.mesh.vertex_count; i++)
-  {
-    Vertex *v = &teapot_model.mesh.verts[i];
-
-    v->varying[COLOR_R] = v->varying[NORMAL_X] * 0.5f + 0.5f;
-    v->varying[COLOR_G] = v->varying[NORMAL_Y] * 0.5f + 0.5f;
-    v->varying[COLOR_B] = v->varying[NORMAL_Z] * 0.5f + 0.5f;
-  }
   Camera camera = {
     .camera_up    = (Vec3){0.0f, 1.0f, 0.0f },
     .camera_front = (Vec3){0.0f, 0.0f, -1.0f},
@@ -1231,10 +1206,6 @@ int main(int argc, char *argv[])
     // model-to-world
     static float angle = 0.0f;
     angle += dt;
-    scene[1].mtw = rotate_y(angle);
-    scene[2].mtw = mat4_mult(translate(-7.5f, 0.0f, 0.0f), rotate_y(angle));
-    scene[3].mtw = mat4_mult(translate(7.5f, 0.0f, 0.0f), rotate_y(angle));
-    scene[4].mtw = mat4_mult(translate(0.0f, 2.0f, 8.5f), rotate_y(angle));
 
     // world-to-view
     Mat4 view = look_at(camera.camera_pos,
