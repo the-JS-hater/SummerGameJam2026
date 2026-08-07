@@ -122,6 +122,7 @@ static KeyMap          keymap;
 static struct timespec last_frame;
 Texture                tex0;
 Texture                tex1;
+Texture                texbottle;
 static Light           light0;
 static Vec3            ambient_light_color;
 
@@ -355,6 +356,7 @@ Model load_model(char const *filename)
 
 void load_texture(Texture *tex, char const *filename)
 {
+  stbi_set_flip_vertically_on_load(true);
   tex->data = stbi_load(filename, &tex->width, &tex->height, &tex->channels, 0);
   if (tex->channels < 4)
   {
@@ -1133,15 +1135,16 @@ int main(int argc, char *argv[])
 
   // load_texture(&tex0, "textures/martin.png");
   load_texture(&tex1, "textures/placeholder16x16.png");
+  load_texture(&texbottle, "textures/bottle.png");
 
   light0 = (Light){.pos       = new_vec3(0.0f, 20.0f, 8.0f),
                    .color_vec = new_vec3(1.0f, 0.95f, 0.85f)};
 
   ambient_light_color = new_vec3(0.25f, 0.30f, 0.40f);
 
-  Model teapot_model       = load_model("models/teapot.obj");
+  Model teapot_model       = load_model("models/bottle.obj");
   teapot_model.mtw         = identity();
-  teapot_model.tex         = &tex1;
+  teapot_model.tex         = &texbottle;
   Model teapot_model_matte = load_model("models/teapot.obj");
   teapot_model_matte.mtw   = translate(-7.5, 0.0, 0.0);
   teapot_model_matte.tex   = &tex1;
