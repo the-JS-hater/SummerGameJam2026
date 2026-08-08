@@ -18,6 +18,19 @@ typedef struct {
   Vec3 camera_up, camera_front, camera_pos;
 } Camera;
 
+INITIALIZE_VECTOR_TEMPLATE(Model);
+
+typedef struct {
+  int hej;
+} Beer;
+
+INITIALIZE_VECTOR_TEMPLATE(Beer);
+
+typedef struct {
+  ModelVec models;
+  BeerVec  beers;
+} Scene;
+
 // ============================================================================
 // GLOBALS
 // ============================================================================
@@ -148,16 +161,17 @@ Mesh generate_ground_mesh(float const size, float const target_quad_size,
 // DRAWING
 // ============================================================================
 
-void draw_scene(Model const *scene, size_t const nr_models, Mat4 const *view,
-                Mat4 const *projection, Camera const *camera, FrameBuffer *fb,
+void draw_scene(Scene const *scene, Mat4 const *view, Mat4 const *projection,
+                Camera const *camera, FrameBuffer *fb,
                 bool const backface_culling)
 {
-  for (size_t i = 0; i < nr_models; ++i)
+  for (size_t i = 0; i < scene->models.size; ++i)
   {
-    draw_model(&scene[i], view, projection, &camera->camera_pos, fb,
-               backface_culling);
+    draw_model(&scene->models.data[i], view, projection, &camera->camera_pos,
+               fb, backface_culling);
   }
 }
+
 
 // ============================================================================
 // INPUT
@@ -274,8 +288,10 @@ int main(int argc, char *argv[])
   ground.tex      = &tex1;
   ground.material = ground_material;
 
-#define NR_MODELS 3
-  Model scene[NR_MODELS] = {ground, bottle_model, bar_box};
+  Scene scene = {0};
+  Model_append(&scene.models, ground);
+  Model_append(&scene.models, bottle_model);
+  Model_append(&scene.models, bar_box);
 
   Vec3 grenade_pos = {0, 1, 0};
 
@@ -318,22 +334,22 @@ int main(int argc, char *argv[])
     if (cfg->wireframe)
     {
       // Draw wireframe debugging
-      for (unsigned i = 0; i < NR_MODELS; ++i)
+      for (size_t i = 0; i < scene.models.size; ++i)
       {
         bool triangle = true, bbox = false;
-        draw_model_wireframe(&scene[i], &view, &projection, &camera.camera_pos,
-                             fb, triangle, bbox);
+        draw_model_wireframe(&scene.models.data[i], &view, &projection,
+                             &camera.camera_pos, fb, triangle, bbox);
       }
     }
     else
     {
       // Draw all the models
-      draw_scene(scene, NR_MODELS, &view, &projection, &camera, fb, true);
+      draw_scene(&scene, &view, &projection, &camera, fb, true);
 
       float t = 100.0;
-      for (size_t i = 0; i < NR_MODELS; ++i)
+      for (size_t i = 0; i < scene.models.size; ++i)
       {
-        Model const *model = &scene[i];
+        Model const *model = &scene.models.data[i];
         Mesh const  *mesh  = &model->mesh;
         for (size_t j = 0; j < mesh->index_count; j += 3)
         {
