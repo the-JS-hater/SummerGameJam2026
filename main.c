@@ -209,6 +209,15 @@ void update_beers(Scene *scene, float dt)
   }
 }
 
+void spawn_beer(BeerVec *beers, Vec3 const pos, Vec3 const dir,
+                float const speed)
+{
+  Beer new_beer     = {0};
+  new_beer.position = pos;
+  new_beer.velocity = vec3_mult_val(dir, speed);
+  Beer_append(beers, new_beer);
+}
+
 // ============================================================================
 // DRAWING
 // ============================================================================
@@ -238,7 +247,7 @@ void draw_scene(Scene const *scene, Mat4 const *view, Mat4 const *projection,
 
 
 // ============================================================================
-// INPUT & GAMEPLAY
+// INPUT
 // ============================================================================
 
 void update_camera(Camera *camera, InputState const *input, double const dt)
@@ -393,10 +402,8 @@ int main(int argc, char *argv[])
     if (input_state.space && beer_spawn_cooldown < dt)
     {
       beer_spawn_cooldown = 2.0f;
-      // spawn_beer(Vec3 pos, Vec3 dir, float speed)
-      // beer.pos = camera.camera_pos
-      // beer.velolcity = camera.camera_front * speed * dt;
-      // scene.beers append new_beer
+      float const speed   = 0.5f;
+      spawn_beer(&scene.beers, camera.camera_pos, camera.camera_front, speed);
     }
 
     update_camera(&camera, &input_state, dt);
