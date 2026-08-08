@@ -23,6 +23,7 @@ INITIALIZE_VECTOR_TEMPLATE(Model);
 typedef struct {
   Vec3 position;
   Vec3 velocity;
+  float angle;
 } Beer;
 
 INITIALIZE_VECTOR_TEMPLATE(Beer);
@@ -30,7 +31,7 @@ INITIALIZE_VECTOR_TEMPLATE(Beer);
 typedef struct {
   ModelVec models;
   BeerVec  beers;
-  Model    beerModel;
+  Model    beer_model;
 } Scene;
 
 // ============================================================================
@@ -168,6 +169,10 @@ void update_beers(Scene *scene, float dt)
   for (size_t l = 0; l < scene->beers.size; ++l)
   {
     Beer *beer  = &scene->beers.data[l];
+
+    beer->velocity.y -= 9.82 * dt;
+    beer->angle += 10.0 * dt;
+
     Vec3  delta = vec3_mult_val(beer->velocity, dt);
 
     float closest = 2.0;
@@ -185,11 +190,7 @@ void update_beers(Scene *scene, float dt)
         {
           verts[k] = transform(model->mtw, verts[k]);
         }
-        Vec3 positions[3] = {
-          {verts[0].x, verts[0].y, verts[0].z},
-          {verts[1].x, verts[1].y, verts[1].z},
-          {verts[2].x, verts[2].y, verts[2].z}
-        };
+        Vec3 positions[3] = { vec3(verts[0]), vec3(verts[1]), vec3(verts[2]) };
 
         float dist;
         Vec3  normal;
@@ -216,10 +217,6 @@ void update_beers(Scene *scene, float dt)
     }
 
     beer->position = vec3_add(beer->position, delta);
-
-
-    // grenade_pos =
-    //   vec3_add(camera.camera_pos, vec3_mult_val(camera.camera_front, t));
   }
 }
 
@@ -252,9 +249,10 @@ void draw_scene(Scene const *scene, Mat4 const *view, Mat4 const *projection,
     Beer const *beer = &scene->beers.data[i];
     Vec3        pos  = beer->position;
 
-    Model transformed = scene->beerModel;
-    transformed.mtw =
-      mat4_mult(translate(pos.x, pos.y, pos.z), scene->beerModel.mtw);
+    Model transformed = scene->beer_model;
+    transformed.mtw = mat4_mult(translate(0, -0.1, 0), transformed.mtw);
+    transformed.mtw = mat4_mult(rotate_x(beer->angle), transformed.mtw);
+    transformed.mtw = mat4_mult(translate(pos.x, pos.y, pos.z), transformed.mtw);
     draw_model(&transformed, view, projection, &camera->camera_pos, fb, true);
   }
 }
@@ -384,7 +382,7 @@ int main(int argc, char *argv[])
 
 
   Scene scene = {
-    .beerModel = grenade,
+    .beer_model = grenade,
   };
   // Model_append(&scene.models, ground);
   // Model_append(&scene.models, bottle_model);
@@ -425,7 +423,7 @@ int main(int argc, char *argv[])
     if (input_state.space && beer_spawn_cooldown < dt)
     {
       beer_spawn_cooldown = 2.0f;
-      float const speed   = 0.5f;
+      float const speed   = 16.0f;
       spawn_beer(&scene.beers, camera.camera_pos, camera.camera_front, speed);
     }
 
