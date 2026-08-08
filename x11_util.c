@@ -15,6 +15,7 @@ void init_keymap(Display *display)
   keymap.f          = XKeysymToKeycode(display, XK_f);
   keymap.left_shift = XKeysymToKeycode(display, XK_Shift_L);
   keymap.left_ctrl  = XKeysymToKeycode(display, XK_Control_L);
+  keymap.space      = XKeysymToKeycode(display, XK_space);
 }
 
 void hide_cursor(AppConfig *cfg)
@@ -150,6 +151,8 @@ void poll_input(AppConfig *cfg, bool *quit, InputState *input)
         input->shift = true;
       else if (kc == keymap.left_ctrl)
         input->ctrl = true;
+      else if (kc == keymap.space)
+        input->space = true;
       else if (kc == keymap.q)
         cfg->wireframe = !cfg->wireframe;
       else if (kc == keymap.f)
@@ -170,6 +173,8 @@ void poll_input(AppConfig *cfg, bool *quit, InputState *input)
         input->shift = false;
       else if (kc == keymap.left_ctrl)
         input->ctrl = false;
+      else if (kc == keymap.space)
+        input->space = false;
     }
     XWarpPointer(cfg->display, None, cfg->window, 0, 0, 0, 0, center_x,
                  center_y);

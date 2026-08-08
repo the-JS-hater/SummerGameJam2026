@@ -167,8 +167,8 @@ void update_beers(Scene *scene, float dt)
 {
   for (size_t l = 0; l < scene->beers.size; ++l)
   {
-    Beer *beer = &scene->beers.data[l];
-    Vec3 delta = vec3_mult_val(beer->velocity, dt);
+    Beer *beer  = &scene->beers.data[l];
+    Vec3  delta = vec3_mult_val(beer->velocity, dt);
 
     float closest = 2.0;
     for (size_t i = 0; i < scene->models.size; ++i)
@@ -178,8 +178,8 @@ void update_beers(Scene *scene, float dt)
       for (size_t j = 0; j < mesh->index_count; j += 3)
       {
         Vec4 verts[3] = {mesh->verts[mesh->indices[j]].pos,
-                          mesh->verts[mesh->indices[j + 1]].pos,
-                          mesh->verts[mesh->indices[j + 2]].pos};
+                         mesh->verts[mesh->indices[j + 1]].pos,
+                         mesh->verts[mesh->indices[j + 2]].pos};
         for (size_t k = 0; k < 3; k++)
         {
           verts[k] = transform(model->mtw, verts[k]);
@@ -207,8 +207,6 @@ void update_beers(Scene *scene, float dt)
     // grenade_pos =
     //   vec3_add(camera.camera_pos, vec3_mult_val(camera.camera_front, t));
   }
-
-
 }
 
 // ============================================================================
@@ -226,19 +224,21 @@ void draw_scene(Scene const *scene, Mat4 const *view, Mat4 const *projection,
   }
 
 
-  for (size_t i = 0; i < scene->beers.size; i++) {
-    const Beer *beer = &scene->beers.data[i];
-    Vec3 pos = beer->position;
+  for (size_t i = 0; i < scene->beers.size; i++)
+  {
+    Beer const *beer = &scene->beers.data[i];
+    Vec3        pos  = beer->position;
 
     Model transformed = scene->beerModel;
-    transformed.mtw = mat4_mult(translate(pos.x, pos.y, pos.z), scene->beerModel.mtw);
+    transformed.mtw =
+      mat4_mult(translate(pos.x, pos.y, pos.z), scene->beerModel.mtw);
     draw_model(&transformed, view, projection, &camera->camera_pos, fb, true);
   }
 }
 
 
 // ============================================================================
-// INPUT
+// INPUT & GAMEPLAY
 // ============================================================================
 
 void update_camera(Camera *camera, InputState const *input, double const dt)
@@ -360,9 +360,9 @@ int main(int argc, char *argv[])
   Model_append(&scene.models, bar_box);
 
   Beer_append(&scene.beers, (Beer){
-    .position = new_vec3(0.0, 4.0, 0.0),
-    .velocity = new_vec3(0.5, 0.0, 0.0),
-  });
+                              .position = new_vec3(0.0, 4.0, 0.0),
+                              .velocity = new_vec3(0.5, 0.0, 0.0),
+                            });
 
   Camera camera = {
     .camera_up    = (Vec3){0.0f, 1.0f, 0.0f },
@@ -377,8 +377,9 @@ int main(int argc, char *argv[])
 
   clock_gettime(CLOCK_MONOTONIC, &last_frame);
 
-  InputState  input_state = {0};
-  static bool quit        = false;
+  InputState   input_state         = {0};
+  static float beer_spawn_cooldown = 0.0f;
+  static bool  quit                = false;
   while (!quit)
   {
     // WARN: only call once per frame
@@ -387,6 +388,16 @@ int main(int argc, char *argv[])
       printf("frame time: %.4f seconds => FPS: %d\n", dt, (int)(1.0 / dt));
 
     poll_input(cfg, &quit, &input_state);
+    beer_spawn_cooldown =
+      beer_spawn_cooldown > dt ? beer_spawn_cooldown - dt : 0.0f;
+    if (input_state.space && beer_spawn_cooldown < dt)
+    {
+      beer_spawn_cooldown = 2.0f;
+      // spawn_beer(Vec3 pos, Vec3 dir, float speed)
+      // beer.pos = camera.camera_pos
+      // beer.velolcity = camera.camera_front * speed * dt;
+      // scene.beers append new_beer
+    }
 
     update_camera(&camera, &input_state, dt);
 

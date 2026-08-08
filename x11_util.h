@@ -29,6 +29,7 @@ typedef struct {
   bool d;
   bool shift;
   bool ctrl;
+  bool space;
   int  mouse_dx;
   int  mouse_dy;
 } InputState;
@@ -40,7 +41,7 @@ typedef struct {
 
 typedef struct {
   KeyCode esc, w, a, s, d, r, q, f;
-  KeyCode left_shift, left_ctrl;
+  KeyCode left_shift, left_ctrl, space;
 } KeyMap;
 
 
