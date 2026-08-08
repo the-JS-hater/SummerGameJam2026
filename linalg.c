@@ -659,7 +659,7 @@ bool ray_triangle_intersection(Vec3 origin, Vec3 direction,
   float det         = -dot3(direction, cross_edges);
 
   // Backface culling and parallel test
-  if (det < 1e-5) return false;
+  if (det <= 0) return false;
 
   float inv_det     = 1.0 / det;
   Vec3  s           = vec3_sub(origin, triangle[0]);
