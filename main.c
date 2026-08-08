@@ -256,7 +256,6 @@ void draw_scene(Scene const *scene, Mat4 const *view, Mat4 const *projection,
     Vec3        pos  = beer->position;
 
     Model transformed = scene->beer_model;
-    transformed.mtw = mat4_mult(translate(0, -0.1, 0), transformed.mtw);
     transformed.mtw = mat4_mult(rotate_x(beer->angle), transformed.mtw);
     transformed.mtw = mat4_mult(translate(pos.x, pos.y, pos.z), transformed.mtw);
     draw_model(&transformed, view, projection, &camera->camera_pos, fb, true);
@@ -390,7 +389,7 @@ int main(int argc, char *argv[])
   counter_model.material = ground_material;
 
   Model beer_model    = load_model("models/bottle.obj");
-  beer_model.mtw      = scale(0.03);
+  beer_model.mtw      = mat4_mult(scale(0.05), translate(0, -3.0, 0));
   beer_model.tex      = &texbottle;
   beer_model.material = bottle_material;
 
