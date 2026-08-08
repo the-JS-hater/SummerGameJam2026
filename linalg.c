@@ -1,34 +1,80 @@
 #include "linalg.h"
 
-Vec3 vec3(Vec4 v) { return (Vec3){v.x, v.y, v.z}; }
+Vec3 vec3(Vec4 v)
+{
+  return (Vec3){
+    {v.x, v.y, v.z}
+  };
+}
 
-Vec4 vec4(Vec3 v) { return (Vec4){v.x, v.y, v.z, 1.0}; }
+Vec4 vec4(Vec3 v)
+{
+  return (Vec4){
+    {v.x, v.y, v.z, 1.0}
+  };
+}
 
-Vec3 new_vec3(float x, float y, float z) { return (Vec3){x, y, z}; }
+Vec3 new_vec3(float x, float y, float z)
+{
+  return (Vec3){
+    {x, y, z}
+  };
+}
 
-Vec4 new_vec4(float x, float y, float z, float w) { return (Vec4){x, y, z, w}; }
+Vec4 new_vec4(float x, float y, float z, float w)
+{
+  return (Vec4){
+    {x, y, z, w}
+  };
+}
 
-Vec3 vec3_add_val(Vec3 v, float x) { return (Vec3){v.x + x, v.y + x, v.z + x}; }
+Vec3 vec3_add_val(Vec3 v, float x)
+{
+  return (Vec3){
+    {v.x + x, v.y + x, v.z + x}
+  };
+}
 
-Vec3 vec3_sub_val(Vec3 v, float x) { return (Vec3){v.x - x, v.y - x, v.z - x}; }
+Vec3 vec3_sub_val(Vec3 v, float x)
+{
+  return (Vec3){
+    {v.x - x, v.y - x, v.z - x}
+  };
+}
 
 Vec3 vec3_mult_val(Vec3 v, float x)
 {
-  return (Vec3){v.x * x, v.y * x, v.z * x};
+  return (Vec3){
+    {v.x * x, v.y * x, v.z * x}
+  };
 }
 
-Vec3 vec3_div_val(Vec3 v, float x) { return (Vec3){v.x / x, v.y / x, v.z / x}; }
+Vec3 vec3_div_val(Vec3 v, float x)
+{
+  return (Vec3){
+    {v.x / x, v.y / x, v.z / x}
+  };
+}
 
-Vec3 vec3_neg(Vec3 v) { return (Vec3){-v.x, -v.y, -v.z}; }
+Vec3 vec3_neg(Vec3 v)
+{
+  return (Vec3){
+    {-v.x, -v.y, -v.z}
+  };
+}
 
 Vec3 vec3_add(Vec3 v, Vec3 u)
 {
-  return (Vec3){v.x + u.x, v.y + u.y, v.z + u.z};
+  return (Vec3){
+    {v.x + u.x, v.y + u.y, v.z + u.z}
+  };
 }
 
 Vec3 vec3_sub(Vec3 v, Vec3 u)
 {
-  return (Vec3){v.x - u.x, v.y - u.y, v.z - u.z};
+  return (Vec3){
+    {v.x - u.x, v.y - u.y, v.z - u.z}
+  };
 }
 
 float vec3_length(Vec3 v) { return sqrt(v.x * v.x + v.y * v.y + v.z * v.z); }
@@ -37,8 +83,9 @@ Vec3 vec3_norm(Vec3 v) { return vec3_div_val(v, vec3_length(v)); }
 
 Vec3 cross(Vec3 v, Vec3 u)
 {
-  return (
-    Vec3){v.y * u.z - v.z * u.y, v.z * u.x - v.x * u.z, v.x * u.y - v.y * u.x};
+  return (Vec3){
+    {v.y * u.z - v.z * u.y, v.z * u.x - v.x * u.z, v.x * u.y - v.y * u.x}
+  };
 }
 
 float vec3_dist(Vec3 v, Vec3 u) { return vec3_length(vec3_sub(v, u)); }
@@ -58,34 +105,51 @@ float vec3_angle(Vec3 v, Vec3 u)
 
 Vec4 vec4_add_val(Vec4 v, float x)
 {
-  return (Vec4){v.x + x, v.y + x, v.z + x, v.w + x};
+  return (Vec4){
+    {v.x + x, v.y + x, v.z + x, v.w + x}
+  };
 }
 
 Vec4 vec4_sub_val(Vec4 v, float x)
 {
-  return (Vec4){v.x - x, v.y - x, v.z - x, v.w - x};
+  return (Vec4){
+    {v.x - x, v.y - x, v.z - x, v.w - x}
+  };
 }
 
 Vec4 vec4_mult_val(Vec4 v, float x)
 {
-  return (Vec4){v.x * x, v.y * x, v.z * x, v.w * x};
+  return (Vec4){
+    {v.x * x, v.y * x, v.z * x, v.w * x}
+  };
 }
 
 Vec4 vec4_div_val(Vec4 v, float x)
 {
-  return (Vec4){v.x / x, v.y / x, v.z / x, v.w / x};
+  return (Vec4){
+    {v.x / x, v.y / x, v.z / x, v.w / x}
+  };
 }
 
-Vec4 vec4_neg(Vec4 v) { return (Vec4){-v.x, -v.y, -v.z, -v.w}; }
+Vec4 vec4_neg(Vec4 v)
+{
+  return (Vec4){
+    {-v.x, -v.y, -v.z, -v.w}
+  };
+}
 
 Vec4 vec4_add(Vec4 v, Vec4 u)
 {
-  return (Vec4){v.x + u.x, v.y + u.y, v.z + u.z, v.w + u.w};
+  return (Vec4){
+    {v.x + u.x, v.y + u.y, v.z + u.z, v.w + u.w}
+  };
 }
 
 Vec4 vec4_sub(Vec4 v, Vec4 u)
 {
-  return (Vec4){v.x - u.x, v.y - u.y, v.z - u.z, v.w - u.w};
+  return (Vec4){
+    {v.x - u.x, v.y - u.y, v.z - u.z, v.w - u.w}
+  };
 }
 
 float vec4_length(Vec4 v)
@@ -115,77 +179,87 @@ Vec4 vec4_lerp(Vec4 v, Vec4 u, float t)
 Mat3 mat4_to_mat3(Mat4 m)
 {
   return (Mat3){
-    m.m[0],
-    m.m[1],
-    m.m[2],
-    m.m[4],
-    m.m[5],
-    m.m[6],
-    m.m[8],
-    m.m[9],
-    m.m[10],
+    {
+     m.m[0],
+     m.m[1],
+     m.m[2],
+     m.m[4],
+     m.m[5],
+     m.m[6],
+     m.m[8],
+     m.m[9],
+     m.m[10],
+     }
   };
 }
 
 Mat3 mat3_add(Mat3 m1, Mat3 m2)
 {
   return (Mat3){
-    m1.m[0] + m2.m[0],
-    m1.m[1] + m2.m[1],
-    m1.m[2] + m2.m[2],
-    m1.m[3] + m2.m[3],
-    m1.m[4] + m2.m[4],
-    m1.m[5] + m2.m[5],
-    m1.m[6] + m2.m[6],
-    m1.m[7] + m2.m[7],
-    m1.m[8] + m2.m[8],
+    {
+     m1.m[0] + m2.m[0],
+     m1.m[1] + m2.m[1],
+     m1.m[2] + m2.m[2],
+     m1.m[3] + m2.m[3],
+     m1.m[4] + m2.m[4],
+     m1.m[5] + m2.m[5],
+     m1.m[6] + m2.m[6],
+     m1.m[7] + m2.m[7],
+     m1.m[8] + m2.m[8],
+     }
   };
 }
 
 Mat3 mat3_sub(Mat3 m1, Mat3 m2)
 {
   return (Mat3){
-    m1.m[0] - m2.m[0],
-    m1.m[1] - m2.m[1],
-    m1.m[2] - m2.m[2],
-    m1.m[3] - m2.m[3],
-    m1.m[4] - m2.m[4],
-    m1.m[5] - m2.m[5],
-    m1.m[6] - m2.m[6],
-    m1.m[7] - m2.m[7],
-    m1.m[8] - m2.m[8],
+    {
+     m1.m[0] - m2.m[0],
+     m1.m[1] - m2.m[1],
+     m1.m[2] - m2.m[2],
+     m1.m[3] - m2.m[3],
+     m1.m[4] - m2.m[4],
+     m1.m[5] - m2.m[5],
+     m1.m[6] - m2.m[6],
+     m1.m[7] - m2.m[7],
+     m1.m[8] - m2.m[8],
+     }
   };
 }
 
 Mat3 mat3_scale(Mat3 m, float x)
 {
   return (Mat3){
-    m.m[0] * x,
-    m.m[1] * x,
-    m.m[2] * x,
-    m.m[3] * x,
-    m.m[4] * x,
-    m.m[5] * x,
-    m.m[6] * x,
-    m.m[7] * x,
-    m.m[8] * x,
+    {
+     m.m[0] * x,
+     m.m[1] * x,
+     m.m[2] * x,
+     m.m[3] * x,
+     m.m[4] * x,
+     m.m[5] * x,
+     m.m[6] * x,
+     m.m[7] * x,
+     m.m[8] * x,
+     }
   };
 }
 
 Mat3 mat3_mult(Mat3 m1, Mat3 m2)
 {
   return (Mat3){
-    m1.m[0] * m2.m[0] + m1.m[1] * m2.m[3] + m1.m[2] * m2.m[6],
-    m1.m[0] * m2.m[1] + m1.m[1] * m2.m[4] + m1.m[2] * m2.m[7],
-    m1.m[0] * m2.m[2] + m1.m[1] * m2.m[5] + m1.m[2] * m2.m[8],
+    {
+     m1.m[0] * m2.m[0] + m1.m[1] * m2.m[3] + m1.m[2] * m2.m[6],
+     m1.m[0] * m2.m[1] + m1.m[1] * m2.m[4] + m1.m[2] * m2.m[7],
+     m1.m[0] * m2.m[2] + m1.m[1] * m2.m[5] + m1.m[2] * m2.m[8],
 
-    m1.m[3] * m2.m[0] + m1.m[4] * m2.m[3] + m1.m[5] * m2.m[6],
-    m1.m[3] * m2.m[1] + m1.m[4] * m2.m[4] + m1.m[5] * m2.m[7],
-    m1.m[3] * m2.m[2] + m1.m[4] * m2.m[5] + m1.m[5] * m2.m[8],
+     m1.m[3] * m2.m[0] + m1.m[4] * m2.m[3] + m1.m[5] * m2.m[6],
+     m1.m[3] * m2.m[1] + m1.m[4] * m2.m[4] + m1.m[5] * m2.m[7],
+     m1.m[3] * m2.m[2] + m1.m[4] * m2.m[5] + m1.m[5] * m2.m[8],
 
-    m1.m[6] * m2.m[0] + m1.m[7] * m2.m[3] + m1.m[8] * m2.m[6],
-    m1.m[6] * m2.m[1] + m1.m[7] * m2.m[4] + m1.m[8] * m2.m[7],
-    m1.m[6] * m2.m[2] + m1.m[7] * m2.m[5] + m1.m[8] * m2.m[8],
+     m1.m[6] * m2.m[0] + m1.m[7] * m2.m[3] + m1.m[8] * m2.m[6],
+     m1.m[6] * m2.m[1] + m1.m[7] * m2.m[4] + m1.m[8] * m2.m[7],
+     m1.m[6] * m2.m[2] + m1.m[7] * m2.m[5] + m1.m[8] * m2.m[8],
+     }
   };
 }
 
@@ -193,15 +267,17 @@ Mat3 mat3_mult(Mat3 m1, Mat3 m2)
 Mat3 mat3_transpose(Mat3 m)
 {
   return (Mat3){
-    m.m[0],
-    m.m[3],
-    m.m[6],
-    m.m[1],
-    m.m[4],
-    m.m[7],
-    m.m[2],
-    m.m[5],
-    m.m[8],
+    {
+     m.m[0],
+     m.m[3],
+     m.m[6],
+     m.m[1],
+     m.m[4],
+     m.m[7],
+     m.m[2],
+     m.m[5],
+     m.m[8],
+     }
   };
 }
 
@@ -214,19 +290,21 @@ Mat3 mat3_inverse(Mat3 m)
   float det = a00 * (a11 * a22 - a12 * a21) - a01 * (a10 * a22 - a12 * a20) +
               a02 * (a10 * a21 - a11 * a20);
 
-  if (det == 0.0f) return (Mat3){0};
+  if (det == 0.0f) return (Mat3){{0}};
 
   float invDet = 1.0f / det;
   return (Mat3){
-    (a11 * a22 - a12 * a21) * invDet,
-    -(a10 * a22 - a12 * a20) * invDet,
-    (a10 * a21 - a11 * a20) * invDet,
-    -(a01 * a22 - a02 * a21) * invDet,
-    (a00 * a22 - a02 * a20) * invDet,
-    -(a00 * a21 - a01 * a20) * invDet,
-    (a01 * a12 - a02 * a11) * invDet,
-    -(a00 * a12 - a02 * a10) * invDet,
-    (a00 * a11 - a01 * a10) * invDet,
+    {
+     (a11 * a22 - a12 * a21) * invDet,
+     -(a10 * a22 - a12 * a20) * invDet,
+     (a10 * a21 - a11 * a20) * invDet,
+     -(a01 * a22 - a02 * a21) * invDet,
+     (a00 * a22 - a02 * a20) * invDet,
+     -(a00 * a21 - a01 * a20) * invDet,
+     (a01 * a12 - a02 * a11) * invDet,
+     -(a00 * a12 - a02 * a10) * invDet,
+     (a00 * a11 - a01 * a10) * invDet,
+     }
   };
 }
 
@@ -234,126 +312,136 @@ Mat3 mat3_inverse(Mat3 m)
 Mat4 mat4_add(Mat4 m1, Mat4 m2)
 {
   return (Mat4){
-    m1.m[0] + m2.m[0],
-    m1.m[1] + m2.m[1],
-    m1.m[2] + m2.m[2],
-    m1.m[3] + m2.m[3],
-    m1.m[4] + m2.m[4],
-    m1.m[5] + m2.m[5],
-    m1.m[6] + m2.m[6],
-    m1.m[7] + m2.m[7],
-    m1.m[8] + m2.m[8],
-    m1.m[9] + m2.m[9],
-    m1.m[10] + m2.m[10],
-    m1.m[11] + m2.m[11],
-    m1.m[12] + m2.m[12],
-    m1.m[13] + m2.m[13],
-    m1.m[14] + m2.m[14],
-    m1.m[15] + m2.m[15],
+    {
+     m1.m[0] + m2.m[0],
+     m1.m[1] + m2.m[1],
+     m1.m[2] + m2.m[2],
+     m1.m[3] + m2.m[3],
+     m1.m[4] + m2.m[4],
+     m1.m[5] + m2.m[5],
+     m1.m[6] + m2.m[6],
+     m1.m[7] + m2.m[7],
+     m1.m[8] + m2.m[8],
+     m1.m[9] + m2.m[9],
+     m1.m[10] + m2.m[10],
+     m1.m[11] + m2.m[11],
+     m1.m[12] + m2.m[12],
+     m1.m[13] + m2.m[13],
+     m1.m[14] + m2.m[14],
+     m1.m[15] + m2.m[15],
+     }
   };
 }
 
 Mat4 mat4_sub(Mat4 m1, Mat4 m2)
 {
   return (Mat4){
-    m1.m[0] - m2.m[0],
-    m1.m[1] - m2.m[1],
-    m1.m[2] - m2.m[2],
-    m1.m[3] - m2.m[3],
-    m1.m[4] - m2.m[4],
-    m1.m[5] - m2.m[5],
-    m1.m[6] - m2.m[6],
-    m1.m[7] - m2.m[7],
-    m1.m[8] - m2.m[8],
-    m1.m[9] - m2.m[9],
-    m1.m[10] - m2.m[10],
-    m1.m[11] - m2.m[11],
-    m1.m[12] - m2.m[12],
-    m1.m[13] - m2.m[13],
-    m1.m[14] - m2.m[14],
-    m1.m[15] - m2.m[15],
+    {
+     m1.m[0] - m2.m[0],
+     m1.m[1] - m2.m[1],
+     m1.m[2] - m2.m[2],
+     m1.m[3] - m2.m[3],
+     m1.m[4] - m2.m[4],
+     m1.m[5] - m2.m[5],
+     m1.m[6] - m2.m[6],
+     m1.m[7] - m2.m[7],
+     m1.m[8] - m2.m[8],
+     m1.m[9] - m2.m[9],
+     m1.m[10] - m2.m[10],
+     m1.m[11] - m2.m[11],
+     m1.m[12] - m2.m[12],
+     m1.m[13] - m2.m[13],
+     m1.m[14] - m2.m[14],
+     m1.m[15] - m2.m[15],
+     }
   };
 }
 
 Mat4 mat4_scale(Mat4 m, float x)
 {
   return (Mat4){
-    m.m[0] * x,
-    m.m[1] * x,
-    m.m[2] * x,
-    m.m[3] * x,
-    m.m[4] * x,
-    m.m[5] * x,
-    m.m[6] * x,
-    m.m[7] * x,
-    m.m[8] * x,
-    m.m[9] * x,
-    m.m[10] * x,
-    m.m[11] * x,
-    m.m[12] * x,
-    m.m[13] * x,
-    m.m[14] * x,
-    m.m[15] * x,
+    {
+     m.m[0] * x,
+     m.m[1] * x,
+     m.m[2] * x,
+     m.m[3] * x,
+     m.m[4] * x,
+     m.m[5] * x,
+     m.m[6] * x,
+     m.m[7] * x,
+     m.m[8] * x,
+     m.m[9] * x,
+     m.m[10] * x,
+     m.m[11] * x,
+     m.m[12] * x,
+     m.m[13] * x,
+     m.m[14] * x,
+     m.m[15] * x,
+     }
   };
 }
 
 Mat4 mat4_mult(Mat4 m1, Mat4 m2)
 {
   return (Mat4){
-    m1.m[0] * m2.m[0] + m1.m[4] * m2.m[1] + m1.m[8] * m2.m[2] +
-      m1.m[12] * m2.m[3],
-    m1.m[1] * m2.m[0] + m1.m[5] * m2.m[1] + m1.m[9] * m2.m[2] +
-      m1.m[13] * m2.m[3],
-    m1.m[2] * m2.m[0] + m1.m[6] * m2.m[1] + m1.m[10] * m2.m[2] +
-      m1.m[14] * m2.m[3],
-    m1.m[3] * m2.m[0] + m1.m[7] * m2.m[1] + m1.m[11] * m2.m[2] +
-      m1.m[15] * m2.m[3],
-    m1.m[0] * m2.m[4] + m1.m[4] * m2.m[5] + m1.m[8] * m2.m[6] +
-      m1.m[12] * m2.m[7],
-    m1.m[1] * m2.m[4] + m1.m[5] * m2.m[5] + m1.m[9] * m2.m[6] +
-      m1.m[13] * m2.m[7],
-    m1.m[2] * m2.m[4] + m1.m[6] * m2.m[5] + m1.m[10] * m2.m[6] +
-      m1.m[14] * m2.m[7],
-    m1.m[3] * m2.m[4] + m1.m[7] * m2.m[5] + m1.m[11] * m2.m[6] +
-      m1.m[15] * m2.m[7],
-    m1.m[0] * m2.m[8] + m1.m[4] * m2.m[9] + m1.m[8] * m2.m[10] +
-      m1.m[12] * m2.m[11],
-    m1.m[1] * m2.m[8] + m1.m[5] * m2.m[9] + m1.m[9] * m2.m[10] +
-      m1.m[13] * m2.m[11],
-    m1.m[2] * m2.m[8] + m1.m[6] * m2.m[9] + m1.m[10] * m2.m[10] +
-      m1.m[14] * m2.m[11],
-    m1.m[3] * m2.m[8] + m1.m[7] * m2.m[9] + m1.m[11] * m2.m[10] +
-      m1.m[15] * m2.m[11],
-    m1.m[0] * m2.m[12] + m1.m[4] * m2.m[13] + m1.m[8] * m2.m[14] +
-      m1.m[12] * m2.m[15],
-    m1.m[1] * m2.m[12] + m1.m[5] * m2.m[13] + m1.m[9] * m2.m[14] +
-      m1.m[13] * m2.m[15],
-    m1.m[2] * m2.m[12] + m1.m[6] * m2.m[13] + m1.m[10] * m2.m[14] +
-      m1.m[14] * m2.m[15],
-    m1.m[3] * m2.m[12] + m1.m[7] * m2.m[13] + m1.m[11] * m2.m[14] +
-      m1.m[15] * m2.m[15],
+    {
+     m1.m[0] * m2.m[0] + m1.m[4] * m2.m[1] + m1.m[8] * m2.m[2] +
+        m1.m[12] * m2.m[3],
+     m1.m[1] * m2.m[0] + m1.m[5] * m2.m[1] + m1.m[9] * m2.m[2] +
+        m1.m[13] * m2.m[3],
+     m1.m[2] * m2.m[0] + m1.m[6] * m2.m[1] + m1.m[10] * m2.m[2] +
+        m1.m[14] * m2.m[3],
+     m1.m[3] * m2.m[0] + m1.m[7] * m2.m[1] + m1.m[11] * m2.m[2] +
+        m1.m[15] * m2.m[3],
+     m1.m[0] * m2.m[4] + m1.m[4] * m2.m[5] + m1.m[8] * m2.m[6] +
+        m1.m[12] * m2.m[7],
+     m1.m[1] * m2.m[4] + m1.m[5] * m2.m[5] + m1.m[9] * m2.m[6] +
+        m1.m[13] * m2.m[7],
+     m1.m[2] * m2.m[4] + m1.m[6] * m2.m[5] + m1.m[10] * m2.m[6] +
+        m1.m[14] * m2.m[7],
+     m1.m[3] * m2.m[4] + m1.m[7] * m2.m[5] + m1.m[11] * m2.m[6] +
+        m1.m[15] * m2.m[7],
+     m1.m[0] * m2.m[8] + m1.m[4] * m2.m[9] + m1.m[8] * m2.m[10] +
+        m1.m[12] * m2.m[11],
+     m1.m[1] * m2.m[8] + m1.m[5] * m2.m[9] + m1.m[9] * m2.m[10] +
+        m1.m[13] * m2.m[11],
+     m1.m[2] * m2.m[8] + m1.m[6] * m2.m[9] + m1.m[10] * m2.m[10] +
+        m1.m[14] * m2.m[11],
+     m1.m[3] * m2.m[8] + m1.m[7] * m2.m[9] + m1.m[11] * m2.m[10] +
+        m1.m[15] * m2.m[11],
+     m1.m[0] * m2.m[12] + m1.m[4] * m2.m[13] + m1.m[8] * m2.m[14] +
+        m1.m[12] * m2.m[15],
+     m1.m[1] * m2.m[12] + m1.m[5] * m2.m[13] + m1.m[9] * m2.m[14] +
+        m1.m[13] * m2.m[15],
+     m1.m[2] * m2.m[12] + m1.m[6] * m2.m[13] + m1.m[10] * m2.m[14] +
+        m1.m[14] * m2.m[15],
+     m1.m[3] * m2.m[12] + m1.m[7] * m2.m[13] + m1.m[11] * m2.m[14] +
+        m1.m[15] * m2.m[15],
+     }
   };
 }
 
 Mat4 mat4_transpose(Mat4 m)
 {
   return (Mat4){
-    m.m[0],
-    m.m[4],
-    m.m[8],
-    m.m[12],
-    m.m[1],
-    m.m[5],
-    m.m[9],
-    m.m[13],
-    m.m[2],
-    m.m[6],
-    m.m[10],
-    m.m[14],
-    m.m[3],
-    m.m[7],
-    m.m[11],
-    m.m[15],
+    {
+     m.m[0],
+     m.m[4],
+     m.m[8],
+     m.m[12],
+     m.m[1],
+     m.m[5],
+     m.m[9],
+     m.m[13],
+     m.m[2],
+     m.m[6],
+     m.m[10],
+     m.m[14],
+     m.m[3],
+     m.m[7],
+     m.m[11],
+     m.m[15],
+     }
   };
 }
 
@@ -380,176 +468,143 @@ Mat4 mat4_inverse(Mat4 m)
   float det =
     b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
 
-  if (det == 0.0f) return (Mat4){0};
+  if (det == 0.0f) return (Mat4){{0}};
 
   float invDet = 1.0f / det;
   return (Mat4){
-    (a11 * b11 - a12 * b10 + a13 * b09) * invDet,
-    (-a10 * b11 + a12 * b08 - a13 * b07) * invDet,
-    (a10 * b10 - a11 * b08 + a13 * b06) * invDet,
-    (-a10 * b09 + a11 * b07 - a12 * b06) * invDet,
-    (-a01 * b11 + a02 * b10 - a03 * b09) * invDet,
-    (a00 * b11 - a02 * b08 + a03 * b07) * invDet,
-    (-a00 * b10 + a01 * b08 - a03 * b06) * invDet,
-    (a00 * b09 - a01 * b07 + a02 * b06) * invDet,
-    (a31 * b05 - a32 * b04 + a33 * b03) * invDet,
-    (-a30 * b05 + a32 * b02 - a33 * b01) * invDet,
-    (a30 * b04 - a31 * b02 + a33 * b00) * invDet,
-    (-a30 * b03 + a31 * b01 - a32 * b00) * invDet,
-    (-a21 * b05 + a22 * b04 - a23 * b03) * invDet,
-    (a20 * b05 - a22 * b02 + a23 * b01) * invDet,
-    (-a20 * b04 + a21 * b02 - a23 * b00) * invDet,
-    (a20 * b03 - a21 * b01 + a22 * b00) * invDet,
+    {
+     (a11 * b11 - a12 * b10 + a13 * b09) * invDet,
+     (-a10 * b11 + a12 * b08 - a13 * b07) * invDet,
+     (a10 * b10 - a11 * b08 + a13 * b06) * invDet,
+     (-a10 * b09 + a11 * b07 - a12 * b06) * invDet,
+     (-a01 * b11 + a02 * b10 - a03 * b09) * invDet,
+     (a00 * b11 - a02 * b08 + a03 * b07) * invDet,
+     (-a00 * b10 + a01 * b08 - a03 * b06) * invDet,
+     (a00 * b09 - a01 * b07 + a02 * b06) * invDet,
+     (a31 * b05 - a32 * b04 + a33 * b03) * invDet,
+     (-a30 * b05 + a32 * b02 - a33 * b01) * invDet,
+     (a30 * b04 - a31 * b02 + a33 * b00) * invDet,
+     (-a30 * b03 + a31 * b01 - a32 * b00) * invDet,
+     (-a21 * b05 + a22 * b04 - a23 * b03) * invDet,
+     (a20 * b05 - a22 * b02 + a23 * b01) * invDet,
+     (-a20 * b04 + a21 * b02 - a23 * b00) * invDet,
+     (a20 * b03 - a21 * b01 + a22 * b00) * invDet,
+     }
   };
 }
 
 Mat4 identity()
 {
   return (Mat4){
-    1.0f,
-    0.0f,
-    0.0f,
-    0.0f,
-    0.0f,
-    1.0f,
-    0.0f,
-    0.0f,
-    0.0f,
-    0.0f,
-    1.0f,
-    0.0f,
-    0.0f,
-    0.0f,
-    0.0f,
-    1.0f,
+    {
+     1.0f, 0.0f,
+     0.0f, 0.0f,
+     0.0f, 1.0f,
+     0.0f, 0.0f,
+     0.0f, 0.0f,
+     1.0f, 0.0f,
+     0.0f, 0.0f,
+     0.0f, 1.0f,
+     }
   };
 }
 
 Mat4 scale(float x)
 {
   return (Mat4){
-    x,
-    0.0f,
-    0.0f,
-    0.0f,
-    0.0f,
-    x,
-    0.0f,
-    0.0f,
-    0.0f,
-    0.0f,
-    x,
-    0.0f,
-    0.0f,
-    0.0f,
-    0.0f,
-    1.0f,
+    {
+     x, 0.0f,
+     0.0f, 0.0f,
+     0.0f, x,
+     0.0f, 0.0f,
+     0.0f, 0.0f,
+     x, 0.0f,
+     0.0f, 0.0f,
+     0.0f, 1.0f,
+     }
   };
 }
 
 Mat4 translate(float x, float y, float z)
 {
-  return (Mat4){1.0f,
-                0.0f,
-                0.0f,
-                0.0f,
-                0.0f,
-                1.0f,
-                0.0f,
-                0.0f,
-                0.0f,
-                0.0f,
-                1.0f,
-                0.0f,
-                x,
-                y,
-                z,
-                1.0f};
+  return (Mat4){
+    {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, x,
+     y, z, 1.0f}
+  };
 }
 
 // NOTE: math.h cos/sin/etc expect radians
 Mat4 rotate_x(float r)
 {
   return (Mat4){
-    1.0f,
-    0.0f,
-    0.0f,
-    0.0f,
-    0.0f,
-    cos(r),
-    -sin(r),
-    0.0f,
-    0.0f,
-    sin(r),
-    cos(r),
-    0.0f,
-    0.0f,
-    0.0f,
-    0.0f,
-    1.0f,
+    {
+     1.0f, 0.0f,
+     0.0f, 0.0f,
+     0.0f, cos(r),
+     -sin(r),
+     0.0f, 0.0f,
+     sin(r),
+     cos(r),
+     0.0f, 0.0f,
+     0.0f, 0.0f,
+     1.0f, }
   };
 }
 
 Mat4 rotate_y(float r)
 {
   return (Mat4){
-    cos(r),
-    0.0f,
-    sin(r),
-    0.0f,
-    0.0f,
-    1.0f,
-    0.0f,
-    0.0f,
-    -sin(r),
-    0.0f,
-    cos(r),
-    0.0f,
-    0.0f,
-    0.0f,
-    0.0f,
-    1.0f,
+    {
+     cos(r),
+     0.0f, sin(r),
+     0.0f, 0.0f,
+     1.0f, 0.0f,
+     0.0f, -sin(r),
+     0.0f, cos(r),
+     0.0f, 0.0f,
+     0.0f, 0.0f,
+     1.0f, }
   };
 }
 
 Mat4 rotate_z(float r)
 {
   return (Mat4){
-    cos(r),
-    -sin(r),
-    0.0f,
-    0.0f,
-    sin(r),
-    cos(r),
-    0.0f,
-    0.0f,
-    0.0f,
-    0.0f,
-    1.0f,
-    0.0f,
-    0.0f,
-    0.0f,
-    0.0f,
-    1.0f,
+    {
+     cos(r),
+     -sin(r),
+     0.0f, 0.0f,
+     sin(r),
+     cos(r),
+     0.0f, 0.0f,
+     0.0f, 0.0f,
+     1.0f, 0.0f,
+     0.0f, 0.0f,
+     0.0f, 1.0f,
+     }
   };
 }
 
 Vec4 transform(Mat4 m, Vec4 v)
 {
   return (Vec4){
-    m.m[0] * v.x + m.m[4] * v.y + m.m[8] * v.z + m.m[12] * v.w,
-    m.m[1] * v.x + m.m[5] * v.y + m.m[9] * v.z + m.m[13] * v.w,
-    m.m[2] * v.x + m.m[6] * v.y + m.m[10] * v.z + m.m[14] * v.w,
-    m.m[3] * v.x + m.m[7] * v.y + m.m[11] * v.z + m.m[15] * v.w,
+    {
+     m.m[0] * v.x + m.m[4] * v.y + m.m[8] * v.z + m.m[12] * v.w,
+     m.m[1] * v.x + m.m[5] * v.y + m.m[9] * v.z + m.m[13] * v.w,
+     m.m[2] * v.x + m.m[6] * v.y + m.m[10] * v.z + m.m[14] * v.w,
+     m.m[3] * v.x + m.m[7] * v.y + m.m[11] * v.z + m.m[15] * v.w,
+     }
   };
 }
 
 Vec3 transform_mat3(Mat3 m, Vec3 v)
 {
   return (Vec3){
-    m.m[0] * v.x + m.m[3] * v.y + m.m[6] * v.z,
-    m.m[1] * v.x + m.m[4] * v.y + m.m[7] * v.z,
-    m.m[2] * v.x + m.m[5] * v.y + m.m[8] * v.z,
+    {
+     m.m[0] * v.x + m.m[3] * v.y + m.m[6] * v.z,
+     m.m[1] * v.x + m.m[4] * v.y + m.m[7] * v.z,
+     m.m[2] * v.x + m.m[5] * v.y + m.m[8] * v.z,
+     }
   };
 }
 
@@ -579,20 +634,21 @@ Mat4 perspective(float fov, float aspect, float near, float far)
   return result;
 }
 
-bool ray_triangle_intersection(Vec3 origin, Vec3 direction, Vec3 const *triangle, float *scaled_distance)
+bool ray_triangle_intersection(Vec3 origin, Vec3 direction,
+                               Vec3 const *triangle, float *scaled_distance)
 {
   Vec3 edge1 = vec3_sub(triangle[1], triangle[0]);
   Vec3 edge2 = vec3_sub(triangle[2], triangle[0]);
 
-  Vec3 cross_edges = cross(edge1, edge2);
-  float det = -dot3(direction, cross_edges);
+  Vec3  cross_edges = cross(edge1, edge2);
+  float det         = -dot3(direction, cross_edges);
 
   // Backface culling and parallel test
   if (det < 1e-5) return false;
 
-  float inv_det = 1.0 / det;
-  Vec3 s = vec3_sub(origin, triangle[0]);
-  Vec3 cross_s_dir = cross(s, direction);
+  float inv_det     = 1.0 / det;
+  Vec3  s           = vec3_sub(origin, triangle[0]);
+  Vec3  cross_s_dir = cross(s, direction);
 
   float u = inv_det * dot3(edge2, cross_s_dir);
   float v = inv_det * -dot3(edge1, cross_s_dir);

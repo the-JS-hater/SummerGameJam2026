@@ -1,24 +1,21 @@
 #pragma once
 
-#include "math.h"
+#include <math.h>
+#include <stdbool.h>
 
 
-typedef struct {
-  union {
-    struct {
-      float x, y, z;
-    };
-    float v[3];
+typedef union {
+  struct {
+    float x, y, z;
   };
+  float v[3];
 } Vec3;
 
-typedef struct {
-  union {
-    struct {
-      float x, y, z, w;
-    };
-    float v[4];
+typedef union {
+  struct {
+    float x, y, z, w;
   };
+  float v[4];
 } Vec4;
 
 Vec3 vec3(Vec4);
@@ -89,4 +86,5 @@ Vec4 transform_vec3(Mat4, Vec3);
 Mat4 ortho(float, float, float, float, float, float);
 Mat4 perspective(float, float, float, float);
 
-bool ray_triangle_intersection(Vec3 origin, Vec3 direction, Vec3 const *triangle, float *scaled_distance);
+bool ray_triangle_intersection(Vec3 origin, Vec3 direction,
+                               Vec3 const *triangle, float *scaled_distance);
