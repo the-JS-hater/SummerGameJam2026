@@ -41,6 +41,7 @@ typedef struct {
 static struct timespec last_frame;
 Texture                tex0;
 Texture                tex1;
+Texture                texfloor;
 Texture                texbottle;
 
 // ============================================================================
@@ -210,10 +211,12 @@ void update_beers(Scene *scene, float dt)
     {
       delta = vec3_mult_val(delta, closest);
 
+      float bounciness = 0.8;
+
       beer->velocity =
         vec3_sub(beer->velocity,
                  vec3_mult_val(closest_normal,
-                               2.0f * dot3(beer->velocity, closest_normal)));
+                               (1.0 + bounciness) * dot3(beer->velocity, closest_normal)));
     }
 
     beer->position = vec3_add(beer->position, delta);
@@ -337,6 +340,7 @@ int main(int argc, char *argv[])
 
   // load_texture(&tex0, "textures/martin.png");
   load_texture(&tex1, "textures/placeholder16x16.png");
+  load_texture(&texfloor, "textures/wood_floor.png");
   load_texture(&texbottle, "textures/bottle.png");
 
   light0 = (Light){.pos       = new_vec3(0.0f, 2.0f, 1.0f),
@@ -352,14 +356,18 @@ int main(int argc, char *argv[])
   building_model.mtw   = identity();
   building_model.tex   = &tex1;
 
+  Model floor_model = load_model("models/floor.obj");
+  floor_model.mtw   = identity();
+  floor_model.tex   = &texfloor;
+
   Model beer_model = load_model("models/bottle.obj");
   beer_model.mtw   = scale(0.03);
   beer_model.tex   = &texbottle;
 
   Material ground_material = {
     .ambient_coeff     = 0.12f,
-    .diffuse_coeff     = 0.45f,
-    .specular_strength = 0.85f,
+    .diffuse_coeff     = 0.65f,
+    .specular_strength = 0.15f,
     .shininess         = 120.0f,
     .specular_color    = new_vec3(1.0f, 1.0f, 1.0f),
   };
@@ -373,6 +381,7 @@ int main(int argc, char *argv[])
   // bottle_model.material   = bottle_material;
   beer_model.material     = bottle_material;
   building_model.material = ground_material;
+  floor_model.material    = ground_material;
 
   Scene scene = {
     .beer_model = beer_model,
@@ -380,6 +389,7 @@ int main(int argc, char *argv[])
   // Model_append(&scene.models, ground);
   // Model_append(&scene.models, bottle_model);
   Model_append(&scene.models, building_model);
+  Model_append(&scene.models, floor_model);
 
   Beer_append(&scene.beers, (Beer){
                               .position = new_vec3(0.0, 4.0, 0.0),
@@ -415,7 +425,7 @@ int main(int argc, char *argv[])
       beer_spawn_cooldown > dt ? beer_spawn_cooldown - dt : 0.0f;
     if (input_state.space && beer_spawn_cooldown < dt)
     {
-      beer_spawn_cooldown = 2.0f;
+      beer_spawn_cooldown = 0.5f;
       float const speed   = 16.0f;
       spawn_beer(&scene.beers, camera.camera_pos, camera.camera_front, speed);
     }
