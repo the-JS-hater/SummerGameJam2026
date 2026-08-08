@@ -173,4 +173,9 @@
                                 void      *ctx)                                \
   {                                                                            \
     for (size_t i = 0; i < vec->size; i++) func(&vec->data[i], ctx);           \
+  }                                                                            \
+                                                                               \
+  static inline void TYPE##_swap_remove(TYPE##Vec *vec, size_t idx)            \
+  {                                                                            \
+    vec->data[idx] = vec->data[--vec->size];                                   \
   }
