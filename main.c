@@ -171,6 +171,7 @@ void update_beers(Scene *scene, float dt)
     Vec3  delta = vec3_mult_val(beer->velocity, dt);
 
     float closest = 2.0;
+    Vec3 closest_normal;
     for (size_t i = 0; i < scene->models.size; ++i)
     {
       Model const *model = &scene->models.data[i];
@@ -191,18 +192,27 @@ void update_beers(Scene *scene, float dt)
         };
 
         float dist;
-        if (ray_triangle_intersection(beer->position, delta, positions, &dist))
+        Vec3 normal;
+        if (ray_triangle_intersection(beer->position, delta, positions, &dist, &normal))
         {
-          closest = fmin(dist, closest);
+          if (dist < closest) {
+            closest = dist;
+            closest_normal = normal;
+          }
         }
       }
     }
 
+    if (closest <= 1.0) {
+      delta = vec3_mult_val(delta, closest);
+
+      beer->velocity = vec3_sub(beer->velocity, vec3_mult_val(closest_normal, 2.0f * dot3(beer->velocity, closest_normal)));
+
+      printf("collide!\n");
+    }
+
     beer->position = vec3_add(beer->position, delta);
 
-    // if (closest <= 1.0) {
-
-    // }
 
     // grenade_pos =
     //   vec3_add(camera.camera_pos, vec3_mult_val(camera.camera_front, t));
@@ -370,7 +380,7 @@ int main(int argc, char *argv[])
 
   Beer_append(&scene.beers, (Beer){
                               .position = new_vec3(0.0, 4.0, 0.0),
-                              .velocity = new_vec3(0.5, 0.0, 0.0),
+                              .velocity = new_vec3(0.25, -0.5, 0.0),
                             });
 
   Camera camera = {

@@ -650,7 +650,7 @@ Mat4 look_at(Vec3 const pos, Vec3 const target, Vec3 const up)
 }
 
 bool ray_triangle_intersection(Vec3 origin, Vec3 direction,
-                               Vec3 const *triangle, float *scaled_distance)
+                               Vec3 const *triangle, float *scaled_distance, Vec3 *normal)
 {
   Vec3 edge1 = vec3_sub(triangle[1], triangle[0]);
   Vec3 edge2 = vec3_sub(triangle[2], triangle[0]);
@@ -672,5 +672,6 @@ bool ray_triangle_intersection(Vec3 origin, Vec3 direction,
   if (u < 0 || v < 0 || u + v > 1.0) return false;
 
   *scaled_distance = inv_det * dot3(s, cross_edges);
+  *normal = vec3_norm(cross_edges);
   return *scaled_distance > 0;
 }

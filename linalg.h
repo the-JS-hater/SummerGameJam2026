@@ -88,4 +88,4 @@ Mat4 perspective(float, float, float, float);
 Mat4 look_at(Vec3, Vec3, Vec3);
 
 bool ray_triangle_intersection(Vec3 origin, Vec3 direction,
-                               Vec3 const *triangle, float *scaled_distance);
+                               Vec3 const *triangle, float *scaled_distance, Vec3 *normal);
