@@ -1150,6 +1150,10 @@ int main(int argc, char *argv[])
   bar_box.mtw   = identity();
   bar_box.tex   = &tex1;
 
+  Model grenade = load_model("models/bottle.obj");
+  grenade.mtw   = scale(0.03);
+  grenade.tex   = &texbottle;
+
   Material ground_material = {
     .ambient_coeff     = 0.12f,
     .diffuse_coeff     = 0.45f,
@@ -1165,6 +1169,7 @@ int main(int argc, char *argv[])
     .specular_color    = {1.0f, 1.0f, 1.0f},
   };
   bottle_model.material = bottle_material;
+  grenade.material = bottle_material;
 
   Model ground    = {0};
   ground.mesh     = generate_ground_mesh(60.0f, 1.5f, 12.0f);
@@ -1174,6 +1179,8 @@ int main(int argc, char *argv[])
 
 #define NR_MODELS 3
   Model scene[NR_MODELS] = {ground, bottle_model, bar_box};
+
+  Vec3 grenade_pos = { 0, 1, 0 };
 
   Camera camera = {
     .camera_up    = (Vec3){0.0f, 1.0f, 0.0f },
@@ -1225,6 +1232,39 @@ int main(int argc, char *argv[])
     {
       // Draw all the models
       draw_scene(scene, NR_MODELS, &view, &projection, &camera, fb, true);
+
+      float t = 100.0;
+      for (size_t i = 0; i < NR_MODELS; ++i) {
+        const Model *model = &scene[i];
+        const Mesh *mesh = &model->mesh;
+        for (size_t j = 0; j < mesh->index_count; j += 3) {
+          Vec4 verts[3] = {
+            mesh->verts[mesh->indices[j]].pos,
+            mesh->verts[mesh->indices[j + 1]].pos,
+            mesh->verts[mesh->indices[j + 2]].pos
+          };
+          for (size_t k = 0; k < 3; k++) {
+            verts[k] = transform(model->mtw, verts[k]);
+          }
+          Vec3 positions[3] = {
+            { verts[0].x, verts[0].y, verts[0].z },
+            { verts[1].x, verts[1].y, verts[1].z },
+            { verts[2].x, verts[2].y, verts[2].z }
+          };
+
+          float dist;
+          if (ray_triangle_intersection(camera.camera_pos, camera.camera_front, positions, &dist)) {
+            t = fmin(dist, t);
+          }
+        }
+      }
+
+      grenade_pos = vec3_add(camera.camera_pos, vec3_mult_val(camera.camera_front, t));
+
+      // Draw the projectiles
+      Model transformed_grenade = grenade;
+      transformed_grenade.mtw = mat4_mult(translate(grenade_pos.x, grenade_pos.y, grenade_pos.z), grenade.mtw);
+      draw_model(&transformed_grenade, &view, &projection, &camera.camera_pos, fb, true);
     }
     update_window(cfg, render_img, disp_img, db, fb);
   };

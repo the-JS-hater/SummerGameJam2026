@@ -578,3 +578,28 @@ Mat4 perspective(float fov, float aspect, float near, float far)
 
   return result;
 }
+
+bool ray_triangle_intersection(Vec3 origin, Vec3 direction, Vec3 const *triangle, float *scaled_distance)
+{
+  Vec3 edge1 = vec3_sub(triangle[1], triangle[0]);
+  Vec3 edge2 = vec3_sub(triangle[2], triangle[0]);
+
+  Vec3 cross_edges = cross(edge1, edge2);
+  float det = -dot3(direction, cross_edges);
+
+  // Backface culling and parallel test
+  if (det < 1e-5) return false;
+
+  float inv_det = 1.0 / det;
+  Vec3 s = vec3_sub(origin, triangle[0]);
+  Vec3 cross_s_dir = cross(s, direction);
+
+  float u = inv_det * dot3(edge2, cross_s_dir);
+  float v = inv_det * -dot3(edge1, cross_s_dir);
+
+  // Test if outside
+  if (u < 0 || v < 0 || u + v > 1.0) return false;
+
+  *scaled_distance = inv_det * dot3(s, cross_edges);
+  return *scaled_distance > 0;
+}

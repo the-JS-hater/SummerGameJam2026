@@ -88,3 +88,5 @@ Vec3 transform_mat3(Mat3, Vec3);
 Vec4 transform_vec3(Mat4, Vec3);
 Mat4 ortho(float, float, float, float, float, float);
 Mat4 perspective(float, float, float, float);
+
+bool ray_triangle_intersection(Vec3 origin, Vec3 direction, Vec3 const *triangle, float *scaled_distance);
