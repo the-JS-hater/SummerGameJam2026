@@ -21,9 +21,10 @@ typedef struct {
 INITIALIZE_VECTOR_TEMPLATE(Model);
 
 typedef struct {
-  Vec3 position;
-  Vec3 velocity;
+  Vec3  position;
+  Vec3  velocity;
   float angle;
+  float lifespan;
 } Beer;
 
 INITIALIZE_VECTOR_TEMPLATE(Beer);
@@ -172,12 +173,12 @@ void update_beers(Scene *scene, float dt)
 {
   for (size_t l = 0; l < scene->beers.size; ++l)
   {
-    Beer *beer  = &scene->beers.data[l];
+    Beer *beer = &scene->beers.data[l];
 
     beer->velocity.y -= 9.82 * dt;
     beer->angle += 10.0 * dt;
 
-    Vec3  delta = vec3_mult_val(beer->velocity, dt);
+    Vec3 delta = vec3_mult_val(beer->velocity, dt);
 
     float closest = 2.0;
     Vec3  closest_normal;
@@ -194,7 +195,7 @@ void update_beers(Scene *scene, float dt)
         {
           verts[k] = transform(model->mtw, verts[k]);
         }
-        Vec3 positions[3] = { vec3(verts[0]), vec3(verts[1]), vec3(verts[2]) };
+        Vec3 positions[3] = {vec3(verts[0]), vec3(verts[1]), vec3(verts[2])};
 
         float dist;
         Vec3  normal;
@@ -216,10 +217,10 @@ void update_beers(Scene *scene, float dt)
 
       float bounciness = 0.8;
 
-      beer->velocity =
-        vec3_sub(beer->velocity,
-                 vec3_mult_val(closest_normal,
-                               (1.0 + bounciness) * dot3(beer->velocity, closest_normal)));
+      beer->velocity = vec3_sub(
+        beer->velocity,
+        vec3_mult_val(closest_normal, (1.0 + bounciness) *
+                                        dot3(beer->velocity, closest_normal)));
     }
 
     beer->position = vec3_add(beer->position, delta);
@@ -232,8 +233,11 @@ void spawn_beer(BeerVec *beers, Vec3 const pos, Vec3 const dir,
   Beer new_beer     = {0};
   new_beer.position = pos;
   new_beer.velocity = vec3_mult_val(dir, speed);
+  new_beer.lifespan = 3.0f;
   Beer_append(beers, new_beer);
 }
+
+bool remove_beer(Beer beer) { return beer.lifespan > 0.0f; }
 
 // ============================================================================
 // DRAWING
@@ -256,8 +260,9 @@ void draw_scene(Scene const *scene, Mat4 const *view, Mat4 const *projection,
     Vec3        pos  = beer->position;
 
     Model transformed = scene->beer_model;
-    transformed.mtw = mat4_mult(rotate_x(beer->angle), transformed.mtw);
-    transformed.mtw = mat4_mult(translate(pos.x, pos.y, pos.z), transformed.mtw);
+    transformed.mtw   = mat4_mult(rotate_x(beer->angle), transformed.mtw);
+    transformed.mtw =
+      mat4_mult(translate(pos.x, pos.y, pos.z), transformed.mtw);
     draw_model(&transformed, view, projection, &camera->camera_pos, fb, true);
   }
 }
@@ -284,17 +289,16 @@ void update_camera(Camera *camera, InputState const *input, double const dt)
   if (pitch > pitch_limit) pitch = pitch_limit;
   if (pitch < -pitch_limit) pitch = -pitch_limit;
 
-  camera->camera_front = new_vec3(
-    cosf(pitch) * cosf(yaw),
-    sinf(pitch),
-    cosf(pitch) * sinf(yaw)
-  );
+  camera->camera_front =
+    new_vec3(cosf(pitch) * cosf(yaw), sinf(pitch), cosf(pitch) * sinf(yaw));
 
   Vec3 const right  = vec3_norm(cross(camera->camera_front, world_up));
   camera->camera_up = vec3_norm(cross(right, camera->camera_front));
 
-  Vec3 ground_forward = vec3_norm(new_vec3(camera->camera_front.x, 0, camera->camera_front.z));
-  Vec3 ground_right = new_vec3(-ground_forward.z, ground_forward.y, ground_forward.x);
+  Vec3 ground_forward =
+    vec3_norm(new_vec3(camera->camera_front.x, 0, camera->camera_front.z));
+  Vec3 ground_right =
+    new_vec3(-ground_forward.z, ground_forward.y, ground_forward.x);
 
   Vec3 move = {0};
   if (input->w) move = vec3_add(move, ground_forward);
@@ -306,8 +310,10 @@ void update_camera(Camera *camera, InputState const *input, double const dt)
     camera->camera_pos =
       vec3_add(camera->camera_pos, vec3_mult_val(vec3_norm(move), speed));
 
-  camera->camera_pos.x = fmin(fmax(camera->camera_pos.x, -(2.0 - 0.8)), 2.0 - 0.8);
-  camera->camera_pos.z = fmin(fmax(camera->camera_pos.z, -(1.5 - 0.8)), 1.5 - 0.8);
+  camera->camera_pos.x =
+    fmin(fmax(camera->camera_pos.x, -(2.0 - 0.8)), 2.0 - 0.8);
+  camera->camera_pos.z =
+    fmin(fmax(camera->camera_pos.z, -(1.5 - 0.8)), 1.5 - 0.8);
 
   // if (input->shift) camera->camera_pos.y += speed;
   // if (input->ctrl) camera->camera_pos.y -= speed;
@@ -403,15 +409,10 @@ int main(int argc, char *argv[])
   Model_append(&scene.models, wall_model);
   Model_append(&scene.models, counter_model);
 
-  Beer_append(&scene.beers, (Beer){
-                              .position = new_vec3(0.0, 4.0, 0.0),
-                              .velocity = new_vec3(0.25, -0.5, 0.0),
-                            });
-
   Camera camera = {
-    .camera_up    = new_vec3(0.0f, 1.0f, 0.0f ),
+    .camera_up    = new_vec3(0.0f, 1.0f, 0.0f),
     .camera_front = new_vec3(0.0f, 0.0f, -1.0f),
-    .camera_pos   = new_vec3(0.0f, 1.6f, 0.0f ),
+    .camera_pos   = new_vec3(0.0f, 1.6f, 0.0f),
   };
 
   // projection
@@ -432,6 +433,12 @@ int main(int argc, char *argv[])
     double const dt = get_frame_delta();
     if (cfg->fps)
       printf("frame time: %.4f seconds => FPS: %d\n", dt, (int)(1.0 / dt));
+
+    for (size_t i = 0; i < scene.beers.size; ++i)
+    {
+      scene.beers.data[i].lifespan -= dt;
+    }
+    Beer_filter(&scene.beers, remove_beer);
 
     poll_input(cfg, &quit, &input_state);
 
