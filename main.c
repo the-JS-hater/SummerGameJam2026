@@ -39,10 +39,13 @@ typedef struct {
 // ============================================================================
 
 static struct timespec last_frame;
-Texture                tex0;
-Texture                tex1;
-Texture                texfloor;
-Texture                texbottle;
+
+Texture tex0;
+Texture tex1;
+Texture texfloor;
+Texture texwall;
+Texture texbottle;
+Texture textable;
 
 // ============================================================================
 // PLUMBING & MISC
@@ -341,28 +344,14 @@ int main(int argc, char *argv[])
   // load_texture(&tex0, "textures/martin.png");
   load_texture(&tex1, "textures/placeholder16x16.png");
   load_texture(&texfloor, "textures/wood_floor.png");
+  load_texture(&texwall, "textures/wall.png");
+  load_texture(&textable, "textures/table.png");
   load_texture(&texbottle, "textures/bottle.png");
 
   light0 = (Light){.pos       = new_vec3(0.0f, 2.0f, 1.0f),
                    .color_vec = new_vec3(1.0f, 0.95f, 0.85f)};
 
   ambient_light_color = new_vec3(0.5f, 0.5f, 0.5f);
-
-  // Model bottle_model = load_model("models/bottle.obj");
-  // bottle_model.mtw   = mat4_mult(translate(0, 0.25, 0), scale(0.03));
-  // bottle_model.tex   = &texbottle;
-
-  Model building_model = load_model("models/building.obj");
-  building_model.mtw   = identity();
-  building_model.tex   = &tex1;
-
-  Model floor_model = load_model("models/floor.obj");
-  floor_model.mtw   = identity();
-  floor_model.tex   = &texfloor;
-
-  Model beer_model = load_model("models/bottle.obj");
-  beer_model.mtw   = scale(0.03);
-  beer_model.tex   = &texbottle;
 
   Material ground_material = {
     .ambient_coeff     = 0.12f,
@@ -378,18 +367,45 @@ int main(int argc, char *argv[])
     .shininess         = 50.0f,
     .specular_color    = new_vec3(1.0f, 1.0f, 1.0f),
   };
-  // bottle_model.material   = bottle_material;
-  beer_model.material     = bottle_material;
-  building_model.material = ground_material;
-  floor_model.material    = ground_material;
+
+  // Model bottle_model = load_model("models/bottle.obj");
+  // bottle_model.mtw   = mat4_mult(translate(0, 0.25, 0), scale(0.03));
+  // bottle_model.tex   = &texbottle;
+
+  Model ceiling_model    = load_model("models/ceiling.obj");
+  ceiling_model.mtw      = identity();
+  ceiling_model.tex      = &tex1;
+  ceiling_model.material = ground_material;
+
+  Model floor_model    = load_model("models/floor.obj");
+  floor_model.mtw      = identity();
+  floor_model.tex      = &texfloor;
+  floor_model.material = ground_material;
+
+  Model wall_model    = load_model("models/wall.obj");
+  wall_model.mtw      = identity();
+  wall_model.tex      = &texwall;
+  wall_model.material = ground_material;
+
+  Model counter_model    = load_model("models/counter.obj");
+  counter_model.mtw      = identity();
+  counter_model.tex      = &textable;
+  counter_model.material = ground_material;
+
+  Model beer_model    = load_model("models/bottle.obj");
+  beer_model.mtw      = scale(0.03);
+  beer_model.tex      = &texbottle;
+  beer_model.material = bottle_material;
 
   Scene scene = {
     .beer_model = beer_model,
   };
   // Model_append(&scene.models, ground);
   // Model_append(&scene.models, bottle_model);
-  Model_append(&scene.models, building_model);
+  Model_append(&scene.models, ceiling_model);
   Model_append(&scene.models, floor_model);
+  Model_append(&scene.models, wall_model);
+  Model_append(&scene.models, counter_model);
 
   Beer_append(&scene.beers, (Beer){
                               .position = new_vec3(0.0, 4.0, 0.0),
