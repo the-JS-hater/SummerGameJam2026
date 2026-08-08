@@ -619,3 +619,19 @@ void clear_background(FrameBuffer *fb, Color const color)
   for (uint32_t i = 0; i < size; ++i)
     fb->depth_buffer[fb->draw_idx][i] = INFINITY;
 }
+
+void draw_crosshair(FrameBuffer *fb, int32_t size, int32_t length, Color color)
+{
+  uint32_t mid_x       = fb->width / 2;
+  uint32_t mid_y       = fb->height / 2;
+  int32_t  low_offset  = -size / 2;
+  int32_t  high_offset = size / 2;
+  for (int32_t offset = low_offset; offset <= high_offset; ++offset)
+  {
+    draw_line(fb, new_vec4(mid_x + offset, mid_y + length, 0, 0),
+              new_vec4(mid_x + offset, mid_y - length, 0, 0), color);
+
+    draw_line(fb, new_vec4(mid_x + length, mid_y + offset, 0, 0),
+              new_vec4(mid_x - length, mid_y + offset, 0, 0), color);
+  }
+}

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #include "linalg.h"
 #include "obj_loader.h"
@@ -72,24 +72,24 @@ extern Light light0;
 extern Vec3  ambient_light_color;
 
 FrameBuffer *init_framebuffer(uint32_t width, uint32_t height);
-Mesh mesh_from_obj(ObjObject const *obj);
-Model load_model(char const *filename);
-void load_texture(Texture *tex, char const *filename);
+Mesh         mesh_from_obj(ObjObject const *obj);
+Model        load_model(char const *filename);
+void         load_texture(Texture *tex, char const *filename);
 
 void draw_pixel(uint32_t const x, uint32_t const y, Color const color,
                 FrameBuffer *fb);
 void draw_line(FrameBuffer *fb, Vec4 const s, Vec4 const e, Color const color);
 uint32_t sample_texture(Texture const *tex, SampleMode const mode,
                         float const u, float const v);
-Vertex lerp_vertex(Vertex const *restrict v, Vertex const *restrict u,
-                   float const t);
-int triangulate_fan(Vertex const *poly, int const poly_count,
-                    Vertex tris_out[][3]);
-int32_t clip_triangle_near(Vertex const in[3], Vertex out[4]);
-void vertex_to_screen(Vertex *verts, uint32_t const fb_width,
-                      uint32_t const fb_height);
-Color shade_pixel(Texture const *tex, float const *varying,
-                  Vec3 const *camera_pos, Material const *material);
+Vertex   lerp_vertex(Vertex const *restrict v, Vertex const *restrict u,
+                     float const t);
+int      triangulate_fan(Vertex const *poly, int const poly_count,
+                         Vertex tris_out[][3]);
+int32_t  clip_triangle_near(Vertex const in[3], Vertex out[4]);
+void     vertex_to_screen(Vertex *verts, uint32_t const fb_width,
+                          uint32_t const fb_height);
+Color    shade_pixel(Texture const *tex, float const *varying,
+                     Vec3 const *camera_pos, Material const *material);
 
 void draw_triangle_wireframe(Vertex const *verts, size_t const idx1,
                              size_t const idx2, size_t const idx3,
@@ -107,3 +107,5 @@ void draw_model(Model const *model, Mat4 const *view, Mat4 const *projection,
                 bool const backface_culling);
 
 void clear_background(FrameBuffer *fb, Color const color);
+
+void draw_crosshair(FrameBuffer *fb, int32_t size, int32_t length, Color color);

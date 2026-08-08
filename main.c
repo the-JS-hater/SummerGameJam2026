@@ -171,7 +171,7 @@ void update_beers(Scene *scene, float dt)
     Vec3  delta = vec3_mult_val(beer->velocity, dt);
 
     float closest = 2.0;
-    Vec3 closest_normal;
+    Vec3  closest_normal;
     for (size_t i = 0; i < scene->models.size; ++i)
     {
       Model const *model = &scene->models.data[i];
@@ -192,21 +192,27 @@ void update_beers(Scene *scene, float dt)
         };
 
         float dist;
-        Vec3 normal;
-        if (ray_triangle_intersection(beer->position, delta, positions, &dist, &normal))
+        Vec3  normal;
+        if (ray_triangle_intersection(beer->position, delta, positions, &dist,
+                                      &normal))
         {
-          if (dist < closest) {
-            closest = dist;
+          if (dist < closest)
+          {
+            closest        = dist;
             closest_normal = normal;
           }
         }
       }
     }
 
-    if (closest <= 1.0) {
+    if (closest <= 1.0)
+    {
       delta = vec3_mult_val(delta, closest);
 
-      beer->velocity = vec3_sub(beer->velocity, vec3_mult_val(closest_normal, 2.0f * dot3(beer->velocity, closest_normal)));
+      beer->velocity =
+        vec3_sub(beer->velocity,
+                 vec3_mult_val(closest_normal,
+                               2.0f * dot3(beer->velocity, closest_normal)));
 
       printf("collide!\n");
     }
@@ -407,6 +413,7 @@ int main(int argc, char *argv[])
       printf("frame time: %.4f seconds => FPS: %d\n", dt, (int)(1.0 / dt));
 
     poll_input(cfg, &quit, &input_state);
+
     beer_spawn_cooldown =
       beer_spawn_cooldown > dt ? beer_spawn_cooldown - dt : 0.0f;
     if (input_state.space && beer_spawn_cooldown < dt)
@@ -445,6 +452,9 @@ int main(int argc, char *argv[])
       // Draw all the models
       draw_scene(&scene, &view, &projection, &camera, fb, true);
     }
+
+    draw_crosshair(fb, 1, 3, 0xFF00FF00);
+
     update_window(cfg, render_img, disp_img, db, fb);
   };
   close_window(cfg);
