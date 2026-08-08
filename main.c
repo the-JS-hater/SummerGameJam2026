@@ -21,7 +21,8 @@ typedef struct {
 INITIALIZE_VECTOR_TEMPLATE(Model);
 
 typedef struct {
-  int hej;
+  Vec3 position;
+  Vec3 velocity;
 } Beer;
 
 INITIALIZE_VECTOR_TEMPLATE(Beer);
@@ -29,6 +30,7 @@ INITIALIZE_VECTOR_TEMPLATE(Beer);
 typedef struct {
   ModelVec models;
   BeerVec  beers;
+  Model    beerModel;
 } Scene;
 
 // ============================================================================
@@ -158,6 +160,58 @@ Mesh generate_ground_mesh(float const size, float const target_quad_size,
 }
 
 // ============================================================================
+// GAME LOGIC
+// ============================================================================
+
+void update_beers(Scene *scene, float dt)
+{
+  for (size_t l = 0; l < scene->beers.size; ++l)
+  {
+    Beer *beer = &scene->beers.data[l];
+    Vec3 delta = vec3_mult_val(beer->velocity, dt);
+
+    float closest = 2.0;
+    for (size_t i = 0; i < scene->models.size; ++i)
+    {
+      Model const *model = &scene->models.data[i];
+      Mesh const  *mesh  = &model->mesh;
+      for (size_t j = 0; j < mesh->index_count; j += 3)
+      {
+        Vec4 verts[3] = {mesh->verts[mesh->indices[j]].pos,
+                          mesh->verts[mesh->indices[j + 1]].pos,
+                          mesh->verts[mesh->indices[j + 2]].pos};
+        for (size_t k = 0; k < 3; k++)
+        {
+          verts[k] = transform(model->mtw, verts[k]);
+        }
+        Vec3 positions[3] = {
+          {verts[0].x, verts[0].y, verts[0].z},
+          {verts[1].x, verts[1].y, verts[1].z},
+          {verts[2].x, verts[2].y, verts[2].z}
+        };
+
+        float dist;
+        if (ray_triangle_intersection(beer->position, delta, positions, &dist))
+        {
+          closest = fmin(dist, closest);
+        }
+      }
+    }
+
+    beer->position = vec3_add(beer->position, delta);
+
+    // if (closest <= 1.0) {
+
+    // }
+
+    // grenade_pos =
+    //   vec3_add(camera.camera_pos, vec3_mult_val(camera.camera_front, t));
+  }
+
+
+}
+
+// ============================================================================
 // DRAWING
 // ============================================================================
 
@@ -169,6 +223,16 @@ void draw_scene(Scene const *scene, Mat4 const *view, Mat4 const *projection,
   {
     draw_model(&scene->models.data[i], view, projection, &camera->camera_pos,
                fb, backface_culling);
+  }
+
+
+  for (size_t i = 0; i < scene->beers.size; i++) {
+    const Beer *beer = &scene->beers.data[i];
+    Vec3 pos = beer->position;
+
+    Model transformed = scene->beerModel;
+    transformed.mtw = mat4_mult(translate(pos.x, pos.y, pos.z), scene->beerModel.mtw);
+    draw_model(&transformed, view, projection, &camera->camera_pos, fb, true);
   }
 }
 
@@ -288,12 +352,17 @@ int main(int argc, char *argv[])
   ground.tex      = &tex1;
   ground.material = ground_material;
 
-  Scene scene = {0};
+  Scene scene = {
+    .beerModel = grenade,
+  };
   Model_append(&scene.models, ground);
   Model_append(&scene.models, bottle_model);
   Model_append(&scene.models, bar_box);
 
-  Vec3 grenade_pos = {0, 1, 0};
+  Beer_append(&scene.beers, (Beer){
+    .position = new_vec3(0.0, 4.0, 0.0),
+    .velocity = new_vec3(0.5, 0.0, 0.0),
+  });
 
   Camera camera = {
     .camera_up    = (Vec3){0.0f, 1.0f, 0.0f },
@@ -321,6 +390,8 @@ int main(int argc, char *argv[])
 
     update_camera(&camera, &input_state, dt);
 
+    update_beers(&scene, dt);
+
     clear_background(fb, 0xFFFFFFFF);
 
     // model-to-world
@@ -345,45 +416,6 @@ int main(int argc, char *argv[])
     {
       // Draw all the models
       draw_scene(&scene, &view, &projection, &camera, fb, true);
-
-      float t = 100.0;
-      for (size_t i = 0; i < scene.models.size; ++i)
-      {
-        Model const *model = &scene.models.data[i];
-        Mesh const  *mesh  = &model->mesh;
-        for (size_t j = 0; j < mesh->index_count; j += 3)
-        {
-          Vec4 verts[3] = {mesh->verts[mesh->indices[j]].pos,
-                           mesh->verts[mesh->indices[j + 1]].pos,
-                           mesh->verts[mesh->indices[j + 2]].pos};
-          for (size_t k = 0; k < 3; k++)
-          {
-            verts[k] = transform(model->mtw, verts[k]);
-          }
-          Vec3 positions[3] = {
-            {verts[0].x, verts[0].y, verts[0].z},
-            {verts[1].x, verts[1].y, verts[1].z},
-            {verts[2].x, verts[2].y, verts[2].z}
-          };
-
-          float dist;
-          if (ray_triangle_intersection(camera.camera_pos, camera.camera_front,
-                                        positions, &dist))
-          {
-            t = fmin(dist, t);
-          }
-        }
-      }
-
-      grenade_pos =
-        vec3_add(camera.camera_pos, vec3_mult_val(camera.camera_front, t));
-
-      // Draw the projectiles
-      Model transformed_grenade = grenade;
-      transformed_grenade.mtw   = mat4_mult(
-        translate(grenade_pos.x, grenade_pos.y, grenade_pos.z), grenade.mtw);
-      draw_model(&transformed_grenade, &view, &projection, &camera.camera_pos,
-                 fb, true);
     }
     update_window(cfg, render_img, disp_img, db, fb);
   };
