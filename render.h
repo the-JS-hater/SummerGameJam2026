@@ -13,10 +13,6 @@ typedef struct {
   uint8_t   draw_idx;
 } FrameBuffer;
 
-typedef struct {
-  Vec3 camera_up, camera_front, camera_pos;
-} Camera;
-
 typedef uint32_t Color;
 
 typedef enum {
