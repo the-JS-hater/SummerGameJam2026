@@ -332,14 +332,11 @@ int main(int argc, char *argv[])
   FrameBuffer   *fb = init_framebuffer(cfg->res_w, cfg->res_h);
   DisplayBuffer *db = init_display_buffer(cfg->win_w, cfg->win_h);
 
-  XImage *render_img = XCreateImage(
-    cfg->display, cfg->visual, cfg->depth, ZPixmap, 0,
-    (char *)fb->color_buffer[fb->draw_idx], cfg->res_w, cfg->res_h, 32, 0);
   XImage *disp_img =
     XCreateImage(cfg->display, cfg->visual, cfg->depth, ZPixmap, 0,
                  (char *)db->pixels, cfg->win_w, cfg->win_h, 32, 0);
   printf("X11 pixel format\n\tR: %08lx \n\tG: %08lx \n\tB: %08lx\n",
-         render_img->red_mask, render_img->green_mask, render_img->blue_mask);
+         disp_img->red_mask, disp_img->green_mask, disp_img->blue_mask);
 
   // load_texture(&tex0, "textures/martin.png");
   load_texture(&tex1, "textures/placeholder16x16.png");
@@ -430,6 +427,8 @@ int main(int argc, char *argv[])
   static bool  quit                = false;
   while (!quit)
   {
+    handle_resize(cfg, db, &disp_img);
+
     // WARN: only call once per frame
     double const dt = get_frame_delta();
     if (cfg->fps)
@@ -478,7 +477,7 @@ int main(int argc, char *argv[])
 
     draw_crosshair(fb, 1, 3, 0xFF00FF00);
 
-    update_window(cfg, render_img, disp_img, db, fb);
+    update_window(cfg, disp_img, db, fb);
   };
   close_window(cfg);
   return 0;

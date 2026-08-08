@@ -1,5 +1,6 @@
 #include "x11_util.h"
 
+#include <X11/Xutil.h>
 
 static KeyMap keymap;
 
@@ -74,10 +75,31 @@ void close_window(AppConfig *cfg)
 DisplayBuffer *init_display_buffer(unsigned width, unsigned height)
 {
   DisplayBuffer *db = calloc(1, sizeof(*db));
-  db->pixels        = calloc(1, width * height * sizeof(uint32_t));
+  db->pixels        = calloc(width * height, sizeof(uint32_t));
   db->width         = width;
   db->height        = height;
   return db;
+}
+
+
+void handle_resize(AppConfig *cfg, DisplayBuffer *db, XImage **disp_img) {
+  XWindowAttributes attrs;
+  XGetWindowAttributes(cfg->display, cfg->window, &attrs);
+
+  if (attrs.width == db->width && attrs.height == db->height) return;
+
+  cfg->win_w = attrs.width;
+  cfg->win_h = attrs.height;
+
+  // Note: This frees db->pixels!
+  XDestroyImage(*disp_img);
+
+  db->width  = cfg->win_w;
+  db->height = cfg->win_h;
+  db->pixels = calloc(db->width * db->height, sizeof(uint32_t));
+
+  *disp_img = XCreateImage(cfg->display, cfg->visual, cfg->depth, ZPixmap, 0,
+                 (char *)db->pixels, cfg->win_w, cfg->win_h, 32, 0);
 }
 
 void resample_nearest(uint32_t const *restrict src, uint32_t *restrict dst,
@@ -95,7 +117,7 @@ void resample_nearest(uint32_t const *restrict src, uint32_t *restrict dst,
   }
 }
 
-void update_window(AppConfig const *cfg, XImage *render_img, XImage *disp_img,
+void update_window(AppConfig const *cfg, XImage *disp_img,
                    DisplayBuffer *db, FrameBuffer *fb)
 {
   resample_nearest(fb->color_buffer[fb->draw_idx], db->pixels, db->width,
@@ -109,7 +131,6 @@ void update_window(AppConfig const *cfg, XImage *render_img, XImage *disp_img,
             cfg->win_w, cfg->win_h);
   XFlush(cfg->display);
   fb->draw_idx     = !fb->draw_idx;
-  render_img->data = (char *)fb->color_buffer[fb->draw_idx];
 }
 
 void poll_input(AppConfig *cfg, bool *quit, InputState *input)

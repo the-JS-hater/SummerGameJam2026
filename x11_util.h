@@ -55,12 +55,14 @@ void close_window(AppConfig *cfg);
 
 DisplayBuffer *init_display_buffer(unsigned width, unsigned height);
 
+void handle_resize(AppConfig *cfg, DisplayBuffer *db, XImage **disp_img);
+
 void resample_nearest(uint32_t const *restrict src, uint32_t *restrict dst,
                       uint32_t const db_width, uint32_t const db_height,
                       uint32_t const fb_width, uint32_t const fb_height);
 
 
-void update_window(AppConfig const *cfg, XImage *render_img, XImage *disp_img,
+void update_window(AppConfig const *cfg, XImage *disp_img,
                    DisplayBuffer *db, FrameBuffer *fb);
 
 
