@@ -213,8 +213,6 @@ void update_beers(Scene *scene, float dt)
         vec3_sub(beer->velocity,
                  vec3_mult_val(closest_normal,
                                2.0f * dot3(beer->velocity, closest_normal)));
-
-      printf("collide!\n");
     }
 
     beer->position = vec3_add(beer->position, delta);
@@ -268,7 +266,7 @@ void draw_scene(Scene const *scene, Mat4 const *view, Mat4 const *projection,
 
 void update_camera(Camera *camera, InputState const *input, double const dt)
 {
-  float const speed             = 5.0f * (float)dt;
+  float const speed             = 6.2f * (float)dt;
   float const mouse_sensitivity = 0.00025f;
   Vec3 const  world_up          = {0.0f, 1.0f, 0.0f};
   float const pitch_limit       = 89.0f * (M_PI / 180.0f);
@@ -292,18 +290,24 @@ void update_camera(Camera *camera, InputState const *input, double const dt)
   Vec3 const right  = vec3_norm(cross(camera->camera_front, world_up));
   camera->camera_up = vec3_norm(cross(right, camera->camera_front));
 
+  Vec3 ground_forward = vec3_norm(new_vec3(camera->camera_front.x, 0, camera->camera_front.z));
+  Vec3 ground_right = new_vec3(-ground_forward.z, ground_forward.y, ground_forward.x);
+
   Vec3 move = {0};
-  if (input->w) move = vec3_add(move, camera->camera_front);
-  if (input->s) move = vec3_sub(move, camera->camera_front);
-  if (input->d) move = vec3_add(move, right);
-  if (input->a) move = vec3_sub(move, right);
+  if (input->w) move = vec3_add(move, ground_forward);
+  if (input->s) move = vec3_sub(move, ground_forward);
+  if (input->d) move = vec3_add(move, ground_right);
+  if (input->a) move = vec3_sub(move, ground_right);
 
   if (vec3_length(move) > 0.0001f)
     camera->camera_pos =
       vec3_add(camera->camera_pos, vec3_mult_val(vec3_norm(move), speed));
 
-  if (input->shift) camera->camera_pos.y += speed;
-  if (input->ctrl) camera->camera_pos.y -= speed;
+  camera->camera_pos.x = fmin(fmax(camera->camera_pos.x, -(2.0 - 0.8)), 2.0 - 0.8);
+  camera->camera_pos.z = fmin(fmax(camera->camera_pos.z, -(1.5 - 0.8)), 1.5 - 0.8);
+
+  // if (input->shift) camera->camera_pos.y += speed;
+  // if (input->ctrl) camera->camera_pos.y -= speed;
 }
 
 // ============================================================================
@@ -337,7 +341,7 @@ int main(int argc, char *argv[])
   load_texture(&tex1, "textures/placeholder16x16.png");
   load_texture(&texbottle, "textures/bottle.png");
 
-  light0 = (Light){.pos       = new_vec3(0.0f, 3.0f, 5.0f),
+  light0 = (Light){.pos       = new_vec3(0.0f, 2.0f, 1.0f),
                    .color_vec = new_vec3(1.0f, 0.95f, 0.85f)};
 
   ambient_light_color = new_vec3(0.5f, 0.5f, 0.5f);
@@ -346,9 +350,9 @@ int main(int argc, char *argv[])
   bottle_model.mtw   = mat4_mult(translate(0, 0.25, 0), scale(0.03));
   bottle_model.tex   = &texbottle;
 
-  Model bar_box = load_model("models/walk_area.obj");
-  bar_box.mtw   = identity();
-  bar_box.tex   = &tex1;
+  Model building_model = load_model("models/building.obj");
+  building_model.mtw   = identity();
+  building_model.tex   = &tex1;
 
   Model grenade = load_model("models/bottle.obj");
   grenade.mtw   = scale(0.03);
@@ -370,6 +374,7 @@ int main(int argc, char *argv[])
   };
   bottle_model.material = bottle_material;
   grenade.material      = bottle_material;
+  building_model.material = ground_material;
 
   Model ground    = {0};
   ground.mesh     = generate_ground_mesh(60.0f, 1.5f, 12.0f);
@@ -377,12 +382,13 @@ int main(int argc, char *argv[])
   ground.tex      = &tex1;
   ground.material = ground_material;
 
+
   Scene scene = {
     .beerModel = grenade,
   };
-  Model_append(&scene.models, ground);
-  Model_append(&scene.models, bottle_model);
-  Model_append(&scene.models, bar_box);
+  // Model_append(&scene.models, ground);
+  // Model_append(&scene.models, bottle_model);
+  Model_append(&scene.models, building_model);
 
   Beer_append(&scene.beers, (Beer){
                               .position = new_vec3(0.0, 4.0, 0.0),
@@ -392,7 +398,7 @@ int main(int argc, char *argv[])
   Camera camera = {
     .camera_up    = (Vec3){0.0f, 1.0f, 0.0f },
     .camera_front = (Vec3){0.0f, 0.0f, -1.0f},
-    .camera_pos   = (Vec3){0.0f, 2.5f, 10.0f},
+    .camera_pos   = (Vec3){0.0f, 1.6f, 0.0f },
   };
 
   // projection
