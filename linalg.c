@@ -639,13 +639,13 @@ Mat4 look_at(Vec3 const pos, Vec3 const target, Vec3 const up)
   Vec3 const cam_dir   = vec3_norm(vec3_sub(pos, target));
   Vec3 const cam_right = vec3_norm(cross(up, cam_dir));
   Vec3 const cam_up    = cross(cam_dir, cam_right);
-  Mat4 const a         = (Mat4){
+  Mat4 const a         = (Mat4){{
     cam_right.x, cam_up.x, cam_dir.x,   0.0f,     cam_right.y, cam_up.y,
     cam_dir.y,   0.0f,     cam_right.z, cam_up.z, cam_dir.z,   0.0f,
     0.0f,        0.0f,     0.0f,        1.0f,
-  };
-  Mat4 const b = (Mat4){1.0f, 0.0f, 0.0f, 0.0f, 0.0f,   1.0f,   0.0f,   0.0f,
-                        0.0f, 0.0f, 1.0f, 0.0f, -pos.x, -pos.y, -pos.z, 1.0f};
+  }};
+  Mat4 const b = (Mat4){{1.0f, 0.0f, 0.0f, 0.0f, 0.0f,   1.0f,   0.0f,   0.0f,
+                         0.0f, 0.0f, 1.0f, 0.0f, -pos.x, -pos.y, -pos.z, 1.0f}};
   return mat4_mult(a, b);
 }
 

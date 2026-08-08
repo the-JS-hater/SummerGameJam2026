@@ -266,7 +266,7 @@ void update_camera(Camera *camera, InputState const *input, double const dt)
 {
   float const speed             = 6.2f * (float)dt;
   float const mouse_sensitivity = 0.00025f;
-  Vec3 const  world_up          = {0.0f, 1.0f, 0.0f};
+  Vec3 const  world_up          = new_vec3(0.0f, 1.0f, 0.0f);
   float const pitch_limit       = 89.0f * (M_PI / 180.0f);
 
   Vec3 const f     = camera->camera_front;
@@ -279,11 +279,11 @@ void update_camera(Camera *camera, InputState const *input, double const dt)
   if (pitch > pitch_limit) pitch = pitch_limit;
   if (pitch < -pitch_limit) pitch = -pitch_limit;
 
-  camera->camera_front = vec3_norm((Vec3){
+  camera->camera_front = new_vec3(
     cosf(pitch) * cosf(yaw),
     sinf(pitch),
-    cosf(pitch) * sinf(yaw),
-  });
+    cosf(pitch) * sinf(yaw)
+  );
 
   Vec3 const right  = vec3_norm(cross(camera->camera_front, world_up));
   camera->camera_up = vec3_norm(cross(right, camera->camera_front));
@@ -344,45 +344,38 @@ int main(int argc, char *argv[])
 
   ambient_light_color = new_vec3(0.5f, 0.5f, 0.5f);
 
-  Model bottle_model = load_model("models/bottle.obj");
-  bottle_model.mtw   = mat4_mult(translate(0, 0.25, 0), scale(0.03));
-  bottle_model.tex   = &texbottle;
+  // Model bottle_model = load_model("models/bottle.obj");
+  // bottle_model.mtw   = mat4_mult(translate(0, 0.25, 0), scale(0.03));
+  // bottle_model.tex   = &texbottle;
 
   Model building_model = load_model("models/building.obj");
   building_model.mtw   = identity();
   building_model.tex   = &tex1;
 
-  Model grenade = load_model("models/bottle.obj");
-  grenade.mtw   = scale(0.03);
-  grenade.tex   = &texbottle;
+  Model beer_model = load_model("models/bottle.obj");
+  beer_model.mtw   = scale(0.03);
+  beer_model.tex   = &texbottle;
 
   Material ground_material = {
     .ambient_coeff     = 0.12f,
     .diffuse_coeff     = 0.45f,
     .specular_strength = 0.85f,
     .shininess         = 120.0f,
-    .specular_color    = {1.0f, 1.0f, 1.0f},
+    .specular_color    = new_vec3(1.0f, 1.0f, 1.0f),
   };
   Material bottle_material = {
     .ambient_coeff     = 0.5,
     .diffuse_coeff     = 0.45f,
     .specular_strength = 0.85f,
     .shininess         = 50.0f,
-    .specular_color    = {1.0f, 1.0f, 1.0f},
+    .specular_color    = new_vec3(1.0f, 1.0f, 1.0f),
   };
-  bottle_model.material = bottle_material;
-  grenade.material      = bottle_material;
+  // bottle_model.material   = bottle_material;
+  beer_model.material     = bottle_material;
   building_model.material = ground_material;
 
-  Model ground    = {0};
-  ground.mesh     = generate_ground_mesh(60.0f, 1.5f, 12.0f);
-  ground.mtw      = identity();
-  ground.tex      = &tex1;
-  ground.material = ground_material;
-
-
   Scene scene = {
-    .beer_model = grenade,
+    .beer_model = beer_model,
   };
   // Model_append(&scene.models, ground);
   // Model_append(&scene.models, bottle_model);
@@ -394,9 +387,9 @@ int main(int argc, char *argv[])
                             });
 
   Camera camera = {
-    .camera_up    = (Vec3){0.0f, 1.0f, 0.0f },
-    .camera_front = (Vec3){0.0f, 0.0f, -1.0f},
-    .camera_pos   = (Vec3){0.0f, 1.6f, 0.0f },
+    .camera_up    = new_vec3(0.0f, 1.0f, 0.0f ),
+    .camera_front = new_vec3(0.0f, 0.0f, -1.0f),
+    .camera_pos   = new_vec3(0.0f, 1.6f, 0.0f ),
   };
 
   // projection

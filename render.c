@@ -492,7 +492,7 @@ void draw_triangle(Vertex const *verts, size_t const idx1, size_t const idx2,
 
       for (int32_t x = x0; x <= x1; ++x)
       {
-        Vec3 const  p = {(float)x + 0.5f, yc, 0.0f};
+        Vec3 const  p = {{(float)x + 0.5f, yc, 0.0f}};
         float const w0 =
           (v3.x - v2.x) * (p.y - v2.y) - (v3.y - v2.y) * (p.x - v2.x);
         float const w1 =
