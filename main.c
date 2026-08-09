@@ -473,12 +473,12 @@ int main(int argc, char *argv[])
   beer_model.tex      = &texbottle;
   beer_model.material = bottle_material;
 
-  ceiling_model.collision_type = BOUNCE;
+  ceiling_model.collision_type     = BOUNCE;
   bar_ceiling_model.collision_type = BOUNCE;
-  wall_model.collision_type    = BOUNCE;
-  floor_model.collision_type   = BOUNCE;
-  counter_model.collision_type = BOUNCE;
-  table_model.collision_type   = SCORE;
+  wall_model.collision_type        = BOUNCE;
+  floor_model.collision_type       = BOUNCE;
+  counter_model.collision_type     = BOUNCE;
+  table_model.collision_type       = SCORE;
 
   Scene scene = {
     .beer_model = beer_model,
