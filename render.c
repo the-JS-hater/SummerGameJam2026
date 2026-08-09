@@ -118,10 +118,6 @@ void draw_line(FrameBuffer *fb, Vec4 const s, Vec4 const e, Color const color)
   {
     return;
   }
-  x0 = x0 < 0 ? 0 : (x0 >= (int32_t)fb->width ? fb->width - 1 : x0);
-  y0 = y0 < 0 ? 0 : (y0 >= (int32_t)fb->height ? fb->height - 1 : y0);
-  x1 = x1 < 0 ? 0 : (x1 >= (int32_t)fb->width ? fb->width - 1 : x1);
-  y1 = y1 < 0 ? 0 : (y1 >= (int32_t)fb->height ? fb->height - 1 : y1);
 
   int32_t dx  = abs(x1 - x0);
   int32_t sx  = x0 < x1 ? 1 : -1;
@@ -131,7 +127,11 @@ void draw_line(FrameBuffer *fb, Vec4 const s, Vec4 const e, Color const color)
 
   while (true)
   {
-    draw_pixel(x0, y0, color, fb);
+    if (y0 < fb->height && x0 < fb->width && y0 > 0 && x0 > 0)
+    {
+      draw_pixel(x0, y0, color, fb);
+    }
+
     if (x0 == x1 && y0 == y1) break;
 
     int e2 = 2 * err;
@@ -492,7 +492,9 @@ void draw_triangle(Vertex const *verts, size_t const idx1, size_t const idx2,
 
       for (int32_t x = x0; x <= x1; ++x)
       {
-        Vec3 const  p = {{(float)x + 0.5f, yc, 0.0f}};
+        Vec3 const p = {
+          {(float)x + 0.5f, yc, 0.0f}
+        };
         float const w0 =
           (v3.x - v2.x) * (p.y - v2.y) - (v3.y - v2.y) * (p.x - v2.x);
         float const w1 =
@@ -527,12 +529,16 @@ void draw_triangle(Vertex const *verts, size_t const idx1, size_t const idx2,
   }
 }
 
+// TODO: move this somewhere sensible and rename it. Also probably use a dynamic
+// array Arbitrary number, := nr. of vertices is Martin
+static Vertex transformed[1000 * 15];
+
 void draw_model_wireframe(Model const *model, Mat4 const *view,
                           Mat4 const *projection, Vec3 *camera_pos,
                           FrameBuffer *fb, bool triangle, bool bbox)
 {
-  Vertex transformed[model->mesh.vertex_count];
-  Mat3   normal_mat = mat3_transpose(mat3_inverse(mat4_to_mat3(model->mtw)));
+  // Vertex transformed[model->mesh.vertex_count];
+  Mat3 normal_mat = mat3_transpose(mat3_inverse(mat4_to_mat3(model->mtw)));
 
   for (size_t i = 0; i < model->mesh.vertex_count; ++i)
   {
@@ -564,10 +570,6 @@ void draw_model_wireframe(Model const *model, Mat4 const *view,
     draw_triangle_wireframe(transformed, idx1, idx2, idx3, fb, triangle, bbox);
   }
 }
-
-// TODO: move this somewhere sensible and rename it. Also probably use a dynamic
-// array Arbitrary number, := nr. of vertices is Martin
-static Vertex transformed[1000 * 15];
 
 void draw_model(Model const *model, Mat4 const *view, Mat4 const *projection,
                 Vec3 const *camera_pos, FrameBuffer *fb,
