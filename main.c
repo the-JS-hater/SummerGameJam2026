@@ -276,8 +276,8 @@ void update_beers(Scene *scene, float dt)
   }
 }
 
-void spawn_beer(BeerVec *beers, Vec3 const pos, Vec3 const extra_vel, Vec3 const dir,
-                float const speed)
+void spawn_beer(BeerVec *beers, Vec3 const pos, Vec3 const extra_vel,
+                Vec3 const dir, float const speed)
 {
   Beer new_beer              = {0};
   new_beer.position          = pos;
@@ -357,7 +357,8 @@ void update_camera(Camera *camera, InputState const *input, double const dt)
   if (input->a) move = vec3_sub(move, ground_right);
 
   Vec3 target_vel = new_vec3(0, 0, 0);
-  if (vec3_length(move) > 0.0001f) {
+  if (vec3_length(move) > 0.0001f)
+  {
     target_vel = vec3_mult_val(vec3_norm(move), speed);
   }
 
@@ -388,7 +389,7 @@ int main(int argc, char *argv[])
                     KeyReleaseMask | PointerMotionMask;
 
   parse_args(cfg, argc, argv);
-  create_window(cfg, "CPU RENDERING PROTOTYPE V2");
+  create_window(cfg, "Corona Chucker");
   init_keymap(cfg->display);
 
   FrameBuffer   *fb = init_framebuffer(cfg->res_w, cfg->res_h);
@@ -550,7 +551,8 @@ int main(int argc, char *argv[])
     {
       beer_spawn_cooldown = 0.5f;
       float const speed   = 16.0f;
-      spawn_beer(&scene.beers, camera.camera_pos, camera.camera_vel, camera.camera_front, speed);
+      spawn_beer(&scene.beers, camera.camera_pos, camera.camera_vel,
+                 camera.camera_front, speed);
     }
 
     update_camera(&camera, &input_state, dt);
