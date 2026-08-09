@@ -275,12 +275,12 @@ void update_beers(Scene *scene, float dt)
   }
 }
 
-void spawn_beer(BeerVec *beers, Vec3 const pos, Vec3 const dir,
+void spawn_beer(BeerVec *beers, Vec3 const pos, Vec3 const extra_vel, Vec3 const dir,
                 float const speed)
 {
   Beer new_beer              = {0};
   new_beer.position          = pos;
-  new_beer.velocity          = vec3_mult_val(dir, speed);
+  new_beer.velocity          = vec3_add(extra_vel, vec3_mult_val(dir, speed));
   new_beer.lifespan          = 3.0f;
   new_beer.accumulated_score = 0;
   Beer_append(beers, new_beer);
@@ -541,7 +541,7 @@ int main(int argc, char *argv[])
     {
       beer_spawn_cooldown = 0.5f;
       float const speed   = 16.0f;
-      spawn_beer(&scene.beers, camera.camera_pos, camera.camera_front, speed);
+      spawn_beer(&scene.beers, camera.camera_pos, camera.camera_vel, camera.camera_front, speed);
     }
 
     update_camera(&camera, &input_state, dt);
