@@ -390,9 +390,10 @@ int main(int argc, char *argv[])
     XCreateImage(cfg->display, cfg->visual, cfg->depth, ZPixmap, 0,
                  (char *)db->pixels, cfg->win_w, cfg->win_h, 32, 0);
 
-  XFontStruct *font = XLoadQueryFont(cfg->display,
-                     "-misc-fixed-medium-r-normal--75-*-*-*-*-*-iso8859-15");
-  if (font) {
+  XFontStruct *font = XLoadQueryFont(
+    cfg->display, "-misc-fixed-medium-r-normal--75-*-*-*-*-*-iso8859-15");
+  if (font)
+  {
     XSetFont(cfg->display, DefaultGC(cfg->display, cfg->screen), font->fid);
   }
   XSetForeground(cfg->display, DefaultGC(cfg->display, cfg->screen),
@@ -460,7 +461,7 @@ int main(int argc, char *argv[])
   ceiling_model.collision_type = BOUNCE;
   wall_model.collision_type    = BOUNCE;
   floor_model.collision_type   = BOUNCE;
-  counter_model.collision_type = STOP;
+  counter_model.collision_type = BOUNCE;
   table_model.collision_type   = SCORE;
 
   Scene scene = {
