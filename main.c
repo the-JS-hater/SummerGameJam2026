@@ -170,6 +170,14 @@ Mesh generate_ground_mesh(float const size, float const target_quad_size,
 // GAME LOGIC
 // ============================================================================
 
+void update_models(Scene *scene, float dt)
+{
+  for (size_t i = 0; i < scene->models.size; ++i)
+  {
+    scene->models.data[i].cooldown -= dt;
+  }
+}
+
 void update_beers(Scene *scene, float dt)
 {
   for (size_t l = 0; l < scene->beers.size; ++l)
@@ -181,13 +189,13 @@ void update_beers(Scene *scene, float dt)
 
     Vec3 delta = vec3_mult_val(beer->velocity, dt);
 
-    float         closest = 2.0;
-    Vec3          closest_normal;
-    CollisionType closest_model_collision_type = NONE;
+    float closest = 2.0;
+    Vec3  closest_normal;
+    Model *closest_model = NULL;
 
     for (size_t i = 0; i < scene->models.size; ++i)
     {
-      Model const *model = &scene->models.data[i];
+      Model *model = &scene->models.data[i];
       if (model->collision_type == NONE) continue;
       Mesh const *mesh = &model->mesh;
       for (size_t j = 0; j < mesh->index_count; j += 3)
@@ -211,7 +219,7 @@ void update_beers(Scene *scene, float dt)
             closest        = dist;
             closest_normal = normal;
 
-            closest_model_collision_type = model->collision_type;
+            closest_model = model;
           }
         }
       }
@@ -221,11 +229,12 @@ void update_beers(Scene *scene, float dt)
     {
 
       // Score doesn't count if it isn't the top side
-      if (closest_model_collision_type == SCORE && closest_normal.y < 0.9) {
-        closest_model_collision_type = BOUNCE;
+      CollisionType collision_type = closest_model->collision_type;
+      if (collision_type == SCORE && (closest_normal.y < 0.9 || closest_model->cooldown > 0)) {
+        collision_type = BOUNCE;
       }
 
-      switch (closest_model_collision_type)
+      switch (collision_type)
       {
         case BOUNCE:
         {
@@ -250,6 +259,7 @@ void update_beers(Scene *scene, float dt)
         {
           beer->lifespan = 0.0;
           scene->score += 1;
+          closest_model->cooldown = 5.0;
           printf("score: %d\n", scene->score);
           break;
         }
@@ -498,6 +508,7 @@ int main(int argc, char *argv[])
 
     update_camera(&camera, &input_state, dt);
 
+    update_models(&scene, dt);
     update_beers(&scene, dt);
 
     clear_background(fb, 0xFFFFFFFF);
