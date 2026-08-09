@@ -62,7 +62,7 @@ typedef struct {
 } Mesh;
 
 
-typedef enum { NONE, BOUNCE, STOP } CollisionType;
+typedef enum { NONE, BOUNCE, STOP, SCORE } CollisionType;
 
 typedef struct {
   Mesh     mesh;

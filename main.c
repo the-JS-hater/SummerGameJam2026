@@ -33,6 +33,7 @@ typedef struct {
   ModelVec models;
   BeerVec  beers;
   Model    beer_model;
+  int      score;
 } Scene;
 
 // ============================================================================
@@ -218,6 +219,12 @@ void update_beers(Scene *scene, float dt)
 
     if (closest <= 1.0)
     {
+
+      // Score doesn't count if it isn't the top side
+      if (closest_model_collision_type == SCORE && closest_normal.y < 0.9) {
+        closest_model_collision_type = BOUNCE;
+      }
+
       switch (closest_model_collision_type)
       {
         case BOUNCE:
@@ -239,6 +246,15 @@ void update_beers(Scene *scene, float dt)
           delta          = new_vec3(0, 0, 0);
           break;
         }
+        case SCORE:
+        {
+          beer->lifespan = 0.0;
+          scene->score += 1;
+          printf("score: %d\n", scene->score);
+          break;
+        }
+        case NONE:
+          break;
       }
     }
 
@@ -409,6 +425,11 @@ int main(int argc, char *argv[])
   counter_model.tex      = &textable;
   counter_model.material = ground_material;
 
+  Model table_model    = load_model("models/table.obj");
+  table_model.mtw      = identity();
+  table_model.tex      = &textable;
+  table_model.material = ground_material;
+
   Model beer_model    = load_model("models/bottle.obj");
   beer_model.mtw      = mat4_mult(scale(0.05), translate(0, -3.0, 0));
   beer_model.tex      = &texbottle;
@@ -418,6 +439,7 @@ int main(int argc, char *argv[])
   wall_model.collision_type    = BOUNCE;
   floor_model.collision_type   = BOUNCE;
   counter_model.collision_type = STOP;
+  table_model.collision_type   = SCORE;
 
   Scene scene = {
     .beer_model = beer_model,
@@ -428,6 +450,9 @@ int main(int argc, char *argv[])
   Model_append(&scene.models, floor_model);
   Model_append(&scene.models, wall_model);
   Model_append(&scene.models, counter_model);
+
+  table_model.mtw = translate(1, 0, 1);
+  Model_append(&scene.models, table_model);
 
   Camera camera = {
     .camera_up    = new_vec3(0.0f, 1.0f, 0.0f),
