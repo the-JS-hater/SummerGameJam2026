@@ -71,7 +71,7 @@ typedef struct {
   Material material;
 
   CollisionType collision_type;
-  float cooldown;
+  float         cooldown;
 } Model;
 
 extern Light light0;

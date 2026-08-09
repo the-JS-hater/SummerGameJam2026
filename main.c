@@ -189,8 +189,8 @@ void update_beers(Scene *scene, float dt)
 
     Vec3 delta = vec3_mult_val(beer->velocity, dt);
 
-    float closest = 2.0;
-    Vec3  closest_normal;
+    float  closest = 2.0;
+    Vec3   closest_normal;
     Model *closest_model = NULL;
 
     for (size_t i = 0; i < scene->models.size; ++i)
@@ -230,7 +230,9 @@ void update_beers(Scene *scene, float dt)
 
       // Score doesn't count if it isn't the top side
       CollisionType collision_type = closest_model->collision_type;
-      if (collision_type == SCORE && (closest_normal.y < 0.9 || closest_model->cooldown > 0)) {
+      if (collision_type == SCORE &&
+          (closest_normal.y < 0.9 || closest_model->cooldown > 0))
+      {
         collision_type = BOUNCE;
       }
 
@@ -263,8 +265,7 @@ void update_beers(Scene *scene, float dt)
           printf("score: %d\n", scene->score);
           break;
         }
-        case NONE:
-          break;
+        case NONE: break;
       }
     }
 

@@ -62,8 +62,8 @@ void resample_nearest(uint32_t const *restrict src, uint32_t *restrict dst,
                       uint32_t const fb_width, uint32_t const fb_height);
 
 
-void update_window(AppConfig const *cfg, XImage *disp_img,
-                   DisplayBuffer *db, FrameBuffer *fb);
+void update_window(AppConfig const *cfg, XImage *disp_img, DisplayBuffer *db,
+                   FrameBuffer *fb);
 
 
 void poll_input(AppConfig *cfg, bool *quit, InputState *input);

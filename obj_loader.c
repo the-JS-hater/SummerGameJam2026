@@ -51,17 +51,9 @@ int parse_f(char const *line, obj_FaceVec *faces)
   obj_FaceElement f3 = {0};
   obj_Face        f  = {0};
   // NOTE: assume all faces are triangles, implement triangulation in the future
-  int n = sscanf(line,
-                 "f %d/%d/%d %d/%d/%d %d/%d/%d",
-                 &f1.v_i,
-                 &f1.vt_i,
-                 &f1.vn_i,
-                 &f2.v_i,
-                 &f2.vt_i,
-                 &f2.vn_i,
-                 &f3.v_i,
-                 &f3.vt_i,
-                 &f3.vn_i);
+  int n =
+    sscanf(line, "f %d/%d/%d %d/%d/%d %d/%d/%d", &f1.v_i, &f1.vt_i, &f1.vn_i,
+           &f2.v_i, &f2.vt_i, &f2.vn_i, &f3.v_i, &f3.vt_i, &f3.vn_i);
   if (n < 9) return -1;
   f.triangles[0] = f1;
   f.triangles[1] = f2;

@@ -1,0 +1,129 @@
+---
+AlignAfterOpenBracket: Align
+AlignArrayOfStructures: Left 
+AlignConsecutiveAssignments:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments:  false
+  AlignCompound:   false
+  AlignFunctionPointers: false
+  PadOperators:    true
+AlignConsecutiveBitFields:
+  Enabled: true 
+  AcrossEmptyLines: false
+  AcrossComments:  false
+  AlignCompound:   false
+  AlignFunctionPointers: false
+  PadOperators:    false
+AlignConsecutiveDeclarations:
+  Enabled: true 
+  AcrossEmptyLines: false
+  AcrossComments:  false
+  AlignCompound:   false
+  AlignFunctionPointers: false
+  PadOperators:    false
+AlignConsecutiveMacros:
+  Enabled: true 
+  AcrossEmptyLines: false
+  AcrossComments:  false
+  AlignCompound:   false
+  AlignFunctionPointers: false
+  PadOperators:    false
+AlignConsecutiveShortCaseStatements:
+  Enabled:         false
+  AcrossEmptyLines: false
+  AcrossComments:  false
+  AlignCaseColons: false
+AlignEscapedNewlines: Right
+AlignOperands: AlignAfterOperator
+AlignTrailingComments:
+  Kind:            Always
+  OverEmptyLines:  1
+AllowAllArgumentsOnNextLine: false 
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortBlocksOnASingleLine: Always
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortEnumsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortLoopsOnASingleLine: true
+AlwaysBreakBeforeMultilineStrings: false
+BitFieldColonSpacing: Both
+BraceWrapping:
+  AfterCaseLabel: true 
+  AfterControlStatement: Always
+  AfterEnum: false
+  AfterFunction: true 
+  AfterObjCDeclaration: false
+  AfterStruct: false
+  AfterUnion: false
+  BeforeElse: true
+  BeforeWhile: false
+  IndentBraces: false
+  SplitEmptyFunction: true
+BreakAdjacentStringLiterals: true
+BreakBeforeBinaryOperators: None
+BreakBeforeBraces: Custom
+BreakBeforeTernaryOperators: true
+BreakStringLiterals: true
+ColumnLimit:     80
+ContinuationIndentWidth: 2
+DerivePointerAlignment: false
+DisableFormat:   false
+IncludeBlocks:   Preserve
+IndentCaseBlocks: false
+IndentCaseLabels: true
+IndentGotoLabels: true
+IndentPPDirectives: BeforeHash
+IndentWidth: 2
+IndentWrappedFunctionNames: false
+InsertBraces:    false
+InsertNewlineAtEOF: false
+IntegerLiteralSeparator:
+  Binary:          1
+  BinaryMinDigits: 9
+  Decimal:         3
+  DecimalMinDigits: 5
+  Hex:             -1
+  HexMinDigits:    0
+KeepEmptyLinesAtEOF: false
+MaxEmptyLinesToKeep: 2
+PointerAlignment: Right
+PPIndentWidth: 1
+QualifierAlignment: Right
+ReferenceAlignment: Pointer
+ReflowComments:  true
+RemoveBracesLLVM: false
+RemoveParentheses: Leave
+RemoveSemicolon: false
+SeparateDefinitionBlocks: Leave
+SkipMacroDefinitionBody: false
+SpaceAfterCStyleCast: false
+SpaceAfterLogicalNot: false
+SpaceAroundPointerQualifiers: Default
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCaseColon: false
+SpaceBeforeParens: ControlStatements
+SpaceBeforeParensOptions:
+  AfterControlStatements: true
+  AfterForeachMacros: true
+  AfterFunctionDefinitionName: false
+  AfterFunctionDeclarationName: false
+  AfterIfMacros:   true
+  BeforeNonEmptyParentheses: false
+SpaceBeforeSquareBrackets: false
+SpacesBeforeTrailingComments: 2
+SpacesInContainerLiterals: true
+SpacesInLineCommentPrefix:
+  Minimum:         1
+  Maximum:         -1
+SpacesInParens:  Never
+SpacesInParensOptions:
+  InCStyleCasts:   false
+  InConditionalStatements: false
+  InEmptyParentheses: false
+  Other:           false
+SpacesInSquareBrackets: false
+TabWidth: 2
+UseTab: Never
+...

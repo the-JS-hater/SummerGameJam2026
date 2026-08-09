@@ -82,7 +82,8 @@ DisplayBuffer *init_display_buffer(unsigned width, unsigned height)
 }
 
 
-void handle_resize(AppConfig *cfg, DisplayBuffer *db, XImage **disp_img) {
+void handle_resize(AppConfig *cfg, DisplayBuffer *db, XImage **disp_img)
+{
   XWindowAttributes attrs;
   XGetWindowAttributes(cfg->display, cfg->window, &attrs);
 
@@ -99,7 +100,7 @@ void handle_resize(AppConfig *cfg, DisplayBuffer *db, XImage **disp_img) {
   db->pixels = calloc(db->width * db->height, sizeof(uint32_t));
 
   *disp_img = XCreateImage(cfg->display, cfg->visual, cfg->depth, ZPixmap, 0,
-                 (char *)db->pixels, cfg->win_w, cfg->win_h, 32, 0);
+                           (char *)db->pixels, cfg->win_w, cfg->win_h, 32, 0);
 }
 
 void resample_nearest(uint32_t const *restrict src, uint32_t *restrict dst,
@@ -117,8 +118,8 @@ void resample_nearest(uint32_t const *restrict src, uint32_t *restrict dst,
   }
 }
 
-void update_window(AppConfig const *cfg, XImage *disp_img,
-                   DisplayBuffer *db, FrameBuffer *fb)
+void update_window(AppConfig const *cfg, XImage *disp_img, DisplayBuffer *db,
+                   FrameBuffer *fb)
 {
   resample_nearest(fb->color_buffer[fb->draw_idx], db->pixels, db->width,
                    db->height, fb->width, fb->height);
@@ -130,7 +131,7 @@ void update_window(AppConfig const *cfg, XImage *disp_img,
             0,  // dest_y
             cfg->win_w, cfg->win_h);
   XFlush(cfg->display);
-  fb->draw_idx     = !fb->draw_idx;
+  fb->draw_idx = !fb->draw_idx;
 }
 
 void poll_input(AppConfig *cfg, bool *quit, InputState *input)

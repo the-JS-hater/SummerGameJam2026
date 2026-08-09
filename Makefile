@@ -50,6 +50,9 @@ perf: clean $(TARGET)
 	perf report
 	rm perf.*
 
+
+format:
+	clang-format -i *.c *.h
 # inspect-elf: build
 # 	objdump --demangle -d -M intel  
 
