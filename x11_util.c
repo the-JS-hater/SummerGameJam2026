@@ -119,7 +119,7 @@ void resample_nearest(uint32_t const *restrict src, uint32_t *restrict dst,
 }
 
 void update_window(AppConfig const *cfg, XImage *disp_img, DisplayBuffer *db,
-                   FrameBuffer *fb)
+                   FrameBuffer *fb, int32_t score)
 {
   resample_nearest(fb->color_buffer[fb->draw_idx], db->pixels, db->width,
                    db->height, fb->width, fb->height);
@@ -130,6 +130,12 @@ void update_window(AppConfig const *cfg, XImage *disp_img, DisplayBuffer *db,
             0,  // dest_x
             0,  // dest_y
             cfg->win_w, cfg->win_h);
+
+  char str_buff[20];
+  snprintf(str_buff, 20, "%d", score);
+
+  XDrawString(cfg->display, cfg->window, DefaultGC(cfg->display, cfg->screen),
+              10, 75, str_buff, strlen(str_buff));
   XFlush(cfg->display);
   fb->draw_idx = !fb->draw_idx;
 }
