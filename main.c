@@ -21,10 +21,11 @@ typedef struct {
 INITIALIZE_VECTOR_TEMPLATE(Model);
 
 typedef struct {
-  Vec3  position;
-  Vec3  velocity;
-  float angle;
-  float lifespan;
+  Vec3    position;
+  Vec3    velocity;
+  float   angle;
+  float   lifespan;
+  int32_t accumulated_score;
 } Beer;
 
 INITIALIZE_VECTOR_TEMPLATE(Beer);
@@ -33,7 +34,7 @@ typedef struct {
   ModelVec models;
   BeerVec  beers;
   Model    beer_model;
-  int      score;
+  int32_t  score;
 } Scene;
 
 // ============================================================================
@@ -249,6 +250,7 @@ void update_beers(Scene *scene, float dt)
                      vec3_mult_val(closest_normal,
                                    (1.0 + bounciness) *
                                      dot3(beer->velocity, closest_normal)));
+          beer->accumulated_score += 1;
           break;
         }
         case STOP:
@@ -260,7 +262,7 @@ void update_beers(Scene *scene, float dt)
         case SCORE:
         {
           beer->lifespan = 0.0;
-          scene->score += 1;
+          scene->score += 1 + beer->accumulated_score;
           closest_model->cooldown = 5.0;
           printf("score: %d\n", scene->score);
           break;
@@ -276,10 +278,11 @@ void update_beers(Scene *scene, float dt)
 void spawn_beer(BeerVec *beers, Vec3 const pos, Vec3 const dir,
                 float const speed)
 {
-  Beer new_beer     = {0};
-  new_beer.position = pos;
-  new_beer.velocity = vec3_mult_val(dir, speed);
-  new_beer.lifespan = 3.0f;
+  Beer new_beer              = {0};
+  new_beer.position          = pos;
+  new_beer.velocity          = vec3_mult_val(dir, speed);
+  new_beer.lifespan          = 3.0f;
+  new_beer.accumulated_score = 0;
   Beer_append(beers, new_beer);
 }
 
@@ -446,7 +449,7 @@ int main(int argc, char *argv[])
   beer_model.tex      = &texbottle;
   beer_model.material = bottle_material;
 
-  ceiling_model.collision_type = NONE;
+  ceiling_model.collision_type = BOUNCE;
   wall_model.collision_type    = BOUNCE;
   floor_model.collision_type   = BOUNCE;
   counter_model.collision_type = STOP;
