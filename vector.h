@@ -149,7 +149,7 @@
     return ret_val;                                                            \
   }                                                                            \
                                                                                \
-  static inline TYPE##Vec TYPE##_filter(TYPE##Vec *vec, bool (*func)(TYPE))    \
+  static inline void TYPE##_filter(TYPE##Vec *vec, bool (*func)(TYPE))         \
   {                                                                            \
     size_t curr_write = 0;                                                     \
     for (size_t curr_read = 0; curr_read < vec->size; ++curr_read)             \

@@ -61,11 +61,16 @@ typedef struct {
   size_t  index_count;
 } Mesh;
 
+
+typedef enum { NONE, BOUNCE, STOP } CollisionType;
+
 typedef struct {
   Mesh     mesh;
   Mat4     mtw;
   Texture *tex;
   Material material;
+
+  CollisionType collision_type;
 } Model;
 
 extern Light light0;

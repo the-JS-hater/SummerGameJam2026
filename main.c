@@ -180,12 +180,15 @@ void update_beers(Scene *scene, float dt)
 
     Vec3 delta = vec3_mult_val(beer->velocity, dt);
 
-    float closest = 2.0;
-    Vec3  closest_normal;
+    float         closest = 2.0;
+    Vec3          closest_normal;
+    CollisionType closest_model_collision_type = NONE;
+
     for (size_t i = 0; i < scene->models.size; ++i)
     {
       Model const *model = &scene->models.data[i];
-      Mesh const  *mesh  = &model->mesh;
+      if (model->collision_type == NONE) continue;
+      Mesh const *mesh = &model->mesh;
       for (size_t j = 0; j < mesh->index_count; j += 3)
       {
         Vec4 verts[3] = {mesh->verts[mesh->indices[j]].pos,
@@ -206,6 +209,8 @@ void update_beers(Scene *scene, float dt)
           {
             closest        = dist;
             closest_normal = normal;
+
+            closest_model_collision_type = model->collision_type;
           }
         }
       }
@@ -213,14 +218,28 @@ void update_beers(Scene *scene, float dt)
 
     if (closest <= 1.0)
     {
-      delta = vec3_mult_val(delta, closest);
+      switch (closest_model_collision_type)
+      {
+        case BOUNCE:
+        {
+          delta = vec3_mult_val(delta, closest);
 
-      float bounciness = 0.8;
+          float bounciness = 0.8;
 
-      beer->velocity = vec3_sub(
-        beer->velocity,
-        vec3_mult_val(closest_normal, (1.0 + bounciness) *
-                                        dot3(beer->velocity, closest_normal)));
+          beer->velocity =
+            vec3_sub(beer->velocity,
+                     vec3_mult_val(closest_normal,
+                                   (1.0 + bounciness) *
+                                     dot3(beer->velocity, closest_normal)));
+          break;
+        }
+        case STOP:
+        {
+          beer->velocity = new_vec3(0, 0, 0);
+          delta          = new_vec3(0, 0, 0);
+          break;
+        }
+      }
     }
 
     beer->position = vec3_add(beer->position, delta);
@@ -370,10 +389,6 @@ int main(int argc, char *argv[])
     .specular_color    = new_vec3(1.0f, 1.0f, 1.0f),
   };
 
-  // Model bottle_model = load_model("models/bottle.obj");
-  // bottle_model.mtw   = mat4_mult(translate(0, 0.25, 0), scale(0.03));
-  // bottle_model.tex   = &texbottle;
-
   Model ceiling_model    = load_model("models/ceiling.obj");
   ceiling_model.mtw      = identity();
   ceiling_model.tex      = &tex1;
@@ -398,6 +413,11 @@ int main(int argc, char *argv[])
   beer_model.mtw      = mat4_mult(scale(0.05), translate(0, -3.0, 0));
   beer_model.tex      = &texbottle;
   beer_model.material = bottle_material;
+
+  ceiling_model.collision_type = NONE;
+  wall_model.collision_type    = BOUNCE;
+  floor_model.collision_type   = BOUNCE;
+  counter_model.collision_type = STOP;
 
   Scene scene = {
     .beer_model = beer_model,
