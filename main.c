@@ -34,6 +34,7 @@ typedef struct {
   ModelVec models;
   BeerVec  beers;
   Model    beer_model;
+  Model    thirsty_model;
   int32_t  score;
 } Scene;
 
@@ -301,9 +302,14 @@ void draw_scene(Scene const *scene, Mat4 const *view, Mat4 const *projection,
   {
     draw_model(&scene->models.data[i], view, projection, &camera->camera_pos,
                fb, backface_culling);
+    Model *model = &scene->models.data[i];
+    if (model->cooldown < 0.0f && model->collision_type == SCORE)
+    {
+      Model transformed = scene->thirsty_model;
+      transformed.mtw   = model->mtw;
+      draw_model(&transformed, view, projection, &camera->camera_pos, fb, true);
+    }
   }
-
-
   for (size_t i = 0; i < scene->beers.size; i++)
   {
     Beer const *beer = &scene->beers.data[i];
@@ -473,6 +479,10 @@ int main(int argc, char *argv[])
   beer_model.tex      = &texbottle;
   beer_model.material = bottle_material;
 
+  Model thirsty_model    = load_model("models/thirsty.obj");
+  thirsty_model.tex      = &tex1;
+  thirsty_model.material = bottle_material;
+
   ceiling_model.collision_type     = BOUNCE;
   bar_ceiling_model.collision_type = BOUNCE;
   wall_model.collision_type        = BOUNCE;
@@ -481,8 +491,10 @@ int main(int argc, char *argv[])
   table_model.collision_type       = SCORE;
 
   Scene scene = {
-    .beer_model = beer_model,
+    .beer_model    = beer_model,
+    .thirsty_model = thirsty_model,
   };
+
   // Model_append(&scene.models, ground);
   // Model_append(&scene.models, bottle_model);
   Model_append(&scene.models, ceiling_model);
