@@ -46,6 +46,7 @@ static struct timespec last_frame;
 Texture tex0;
 Texture tex1;
 Texture texfloor;
+Texture texceiling;
 Texture texwall;
 Texture texbottle;
 Texture textable;
@@ -411,6 +412,7 @@ int main(int argc, char *argv[])
   // load_texture(&tex0, "textures/martin.png");
   load_texture(&tex1, "textures/placeholder16x16.png");
   load_texture(&texfloor, "textures/wood_floor.png");
+  load_texture(&texceiling, "textures/ceiling.png");
   load_texture(&texwall, "textures/wall.png");
   load_texture(&textable, "textures/table.png");
   load_texture(&texbottle, "textures/bottle.png");
@@ -437,8 +439,13 @@ int main(int argc, char *argv[])
 
   Model ceiling_model    = load_model("models/ceiling.obj");
   ceiling_model.mtw      = identity();
-  ceiling_model.tex      = &tex1;
+  ceiling_model.tex      = &texceiling;
   ceiling_model.material = ground_material;
+
+  Model bar_ceiling_model    = load_model("models/bar_ceiling.obj");
+  bar_ceiling_model.mtw      = identity();
+  bar_ceiling_model.tex      = &texwall;
+  bar_ceiling_model.material = ground_material;
 
   Model floor_model    = load_model("models/floor.obj");
   floor_model.mtw      = identity();
@@ -466,6 +473,7 @@ int main(int argc, char *argv[])
   beer_model.material = bottle_material;
 
   ceiling_model.collision_type = BOUNCE;
+  bar_ceiling_model.collision_type = BOUNCE;
   wall_model.collision_type    = BOUNCE;
   floor_model.collision_type   = BOUNCE;
   counter_model.collision_type = BOUNCE;
@@ -477,6 +485,7 @@ int main(int argc, char *argv[])
   // Model_append(&scene.models, ground);
   // Model_append(&scene.models, bottle_model);
   Model_append(&scene.models, ceiling_model);
+  Model_append(&scene.models, bar_ceiling_model);
   Model_append(&scene.models, floor_model);
   Model_append(&scene.models, wall_model);
   Model_append(&scene.models, counter_model);
