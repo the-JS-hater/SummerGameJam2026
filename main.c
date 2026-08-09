@@ -465,7 +465,24 @@ int main(int argc, char *argv[])
   Model_append(&scene.models, wall_model);
   Model_append(&scene.models, counter_model);
 
-  table_model.mtw = translate(1, 0, 1);
+  table_model.mtw =
+    mat4_mult(translate(4.84439, 0, -7.94403), rotate_y(1.57079));
+  Model_append(&scene.models, table_model);
+  table_model.mtw =
+    mat4_mult(translate(4.84439, 0, -5.38836), rotate_y(1.57079));
+  Model_append(&scene.models, table_model);
+  table_model.mtw =
+    mat4_mult(translate(-2.90822, 0, -3.98068), rotate_y(1.57079));
+  Model_append(&scene.models, table_model);
+  table_model.mtw = mat4_mult(translate(-5.41128, 0, -6.46436), rotate_y(0));
+  Model_append(&scene.models, table_model);
+  table_model.mtw = mat4_mult(translate(0.790692, 0, -8.3214), rotate_y(0));
+  Model_append(&scene.models, table_model);
+  table_model.mtw = mat4_mult(translate(0.790692, 0, -6.22508), rotate_y(0));
+  Model_append(&scene.models, table_model);
+  table_model.mtw = mat4_mult(translate(-1.94653, 0, -8.3214), rotate_y(0));
+  Model_append(&scene.models, table_model);
+  table_model.mtw = mat4_mult(translate(4.5322, 0, 0.497361), rotate_y(0));
   Model_append(&scene.models, table_model);
 
   Camera camera = {
