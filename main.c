@@ -389,9 +389,12 @@ int main(int argc, char *argv[])
   XImage *disp_img =
     XCreateImage(cfg->display, cfg->visual, cfg->depth, ZPixmap, 0,
                  (char *)db->pixels, cfg->win_w, cfg->win_h, 32, 0);
-  XSetFont(cfg->display, DefaultGC(cfg->display, cfg->screen),
-           XLoadFont(cfg->display,
-                     "-misc-fixed-medium-r-normal--75-*-*-*-*-*-iso8859-15"));
+
+  XFontStruct *font = XLoadQueryFont(cfg->display,
+                     "-misc-fixed-medium-r-normal--75-*-*-*-*-*-iso8859-15");
+  if (font) {
+    XSetFont(cfg->display, DefaultGC(cfg->display, cfg->screen), font->fid);
+  }
   XSetForeground(cfg->display, DefaultGC(cfg->display, cfg->screen),
                  0xFFFFFFFF);
   printf("X11 pixel format\n\tR: %08lx \n\tG: %08lx \n\tB: %08lx\n",
