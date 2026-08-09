@@ -51,6 +51,7 @@ Texture texceiling;
 Texture texwall;
 Texture texbottle;
 Texture textable;
+Texture texthirsty;
 
 // ============================================================================
 // PLUMBING & MISC
@@ -423,6 +424,7 @@ int main(int argc, char *argv[])
   load_texture(&texwall, "textures/wall.png");
   load_texture(&textable, "textures/table.png");
   load_texture(&texbottle, "textures/bottle.png");
+  load_texture(&texthirsty, "textures/thirsty.png");
 
   light0 = (Light){.pos       = new_vec3(0.0f, 2.0f, 1.0f),
                    .color_vec = new_vec3(1.0f, 0.95f, 0.85f)};
@@ -480,7 +482,7 @@ int main(int argc, char *argv[])
   beer_model.material = bottle_material;
 
   Model thirsty_model    = load_model("models/thirsty.obj");
-  thirsty_model.tex      = &tex1;
+  thirsty_model.tex      = &texthirsty;
   thirsty_model.material = bottle_material;
 
   ceiling_model.collision_type     = BOUNCE;
