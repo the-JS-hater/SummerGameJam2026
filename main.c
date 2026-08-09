@@ -15,7 +15,7 @@
 #include "x11_util.h"
 
 typedef struct {
-  Vec3 camera_up, camera_front, camera_pos;
+  Vec3 camera_up, camera_front, camera_pos, camera_vel;
 } Camera;
 
 INITIALIZE_VECTOR_TEMPLATE(Model);
@@ -323,7 +323,7 @@ void draw_scene(Scene const *scene, Mat4 const *view, Mat4 const *projection,
 
 void update_camera(Camera *camera, InputState const *input, double const dt)
 {
-  float const speed             = 6.2f * (float)dt;
+  float const speed             = 6.2f;
   float const mouse_sensitivity = 0.00025f;
   Vec3 const  world_up          = new_vec3(0.0f, 1.0f, 0.0f);
   float const pitch_limit       = 89.0f * (M_PI / 180.0f);
@@ -355,9 +355,16 @@ void update_camera(Camera *camera, InputState const *input, double const dt)
   if (input->d) move = vec3_add(move, ground_right);
   if (input->a) move = vec3_sub(move, ground_right);
 
-  if (vec3_length(move) > 0.0001f)
-    camera->camera_pos =
-      vec3_add(camera->camera_pos, vec3_mult_val(vec3_norm(move), speed));
+  Vec3 target_vel = new_vec3(0, 0, 0);
+  if (vec3_length(move) > 0.0001f) {
+    target_vel = vec3_mult_val(vec3_norm(move), speed);
+  }
+
+  Vec3 accel = vec3_mult_val(vec3_sub(target_vel, camera->camera_vel), 10.0);
+  camera->camera_vel = vec3_add(camera->camera_vel, vec3_mult_val(accel, dt));
+
+  camera->camera_pos =
+    vec3_add(camera->camera_pos, vec3_mult_val(camera->camera_vel, dt));
 
   camera->camera_pos.x =
     fmin(fmax(camera->camera_pos.x, -(2.0 - 0.8)), 2.0 - 0.8);
@@ -498,6 +505,7 @@ int main(int argc, char *argv[])
     .camera_up    = new_vec3(0.0f, 1.0f, 0.0f),
     .camera_front = new_vec3(0.0f, 0.0f, -1.0f),
     .camera_pos   = new_vec3(0.0f, 1.6f, 0.0f),
+    .camera_vel   = new_vec3(0.0f, 0.0f, 0.0f),
   };
 
   // projection
